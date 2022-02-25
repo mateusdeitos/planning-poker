@@ -1,10 +1,13 @@
 import { Button, Flex, FormControl, FormLabel, Input, VStack, useToast } from "@chakra-ui/react";
 import { useRouter } from "next/router";
+import PrivatePage from "../components/PrivatePage";
+import { useAuth } from "../context/AuthContext";
 import { useForm } from "../hooks/useForm";
 
-export default function Home() {
+function Home() {
 	const toast = useToast();
-	const { register, getValues } = useForm({ defaultValues: { roomName: "Teste", authorName: "Deitos" } });
+	const { user, logout } = useAuth();
+	const { register, getValues } = useForm({ defaultValues: { roomName: "Teste", authorName: user.displayName } });
 	const router = useRouter();
 
 	const handleCriarSala = async () => {
@@ -52,6 +55,9 @@ export default function Home() {
 				<Input type="text" id="authorName" {...register("authorName")} />
 			</FormControl>
 			<Button variant="outline" onClick={handleCriarSala}>Criar sala</Button>
+			<Button variant="outline" bg="red.300" onClick={logout}>Logout</Button>
 		</VStack>
 	</Flex>
 }
+
+export default PrivatePage(Home);

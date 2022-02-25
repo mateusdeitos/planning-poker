@@ -1,8 +1,10 @@
 import { Button, Flex, FormControl, FormLabel, Input, Text, VStack } from "@chakra-ui/react";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
 import { useMutation } from "react-query";
+import PrivatePage from "../../components/PrivatePage";
+import { useAuth } from "../../context/AuthContext";
 import { useForm } from "../../hooks/useForm";
+import Login from "../login";
 
 const joinRoom = async (roomId: string, memberName: string) => {
 	return fetch(`/api/join-room/${roomId}`, {
@@ -16,8 +18,9 @@ const joinRoom = async (roomId: string, memberName: string) => {
 	});
 }
 
-export default function JoinRoom() {
-	const { register, getValues } = useForm({ defaultValues: { memberName: "Amanda" } });
+function JoinRoom() {
+	const { user } = useAuth();
+	const { register, getValues } = useForm({ defaultValues: { memberName: user.displayName } });
 	const router = useRouter();
 	const roomId = Array.isArray(router.query.roomId) ? router.query.roomId[0] : router.query.roomId;
 	const { mutateAsync, status, error } = useMutation((memberName: string) => joinRoom(roomId, memberName), {
@@ -38,7 +41,6 @@ export default function JoinRoom() {
 	return (
 		<Flex h="100vh" direction="row" alignItems="center" justifyContent="center">
 			<VStack spacing={4}>
-
 				<FormControl>
 					<FormLabel htmlFor="memberName">Como você quer ser chamado</FormLabel>
 					<Input type="text" id="memberName" {...register("memberName")} />
@@ -53,3 +55,14 @@ export default function JoinRoom() {
 	);
 
 }
+
+function Wrapper() {
+	const { user } = useAuth();
+	if (!user) {
+		return <Login />
+	}
+
+	return <JoinRoom />
+}
+
+export default PrivatePage(JoinRoom);

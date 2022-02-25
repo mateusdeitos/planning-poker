@@ -1,9 +1,7 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-import { child, get, getDatabase, onValue, push, ref, update } from "firebase/database";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
-
+import { child, get, getDatabase, push, ref, update } from "firebase/database";
+import { getAuth } from 'firebase/auth'
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -31,3 +29,5 @@ export const updateData = async (updates: Record<string, any>) => {
 export const getData = async (refId: string) => {
 	return get(child(ref(getDatabase(firebaseApp)), refId)).then(snapshot => snapshot.val());
 }
+
+export const auth = getAuth(firebaseApp);

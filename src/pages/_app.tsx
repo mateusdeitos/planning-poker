@@ -1,6 +1,7 @@
 import { ChakraProvider } from "@chakra-ui/react"
 import { QueryClientProvider, QueryClient } from 'react-query'
 import Head from "next/head"
+import { AuthProvider } from "../context/AuthContext";
 
 const client = new QueryClient();
 
@@ -10,9 +11,11 @@ function MyApp({ Component, pageProps }) {
 			<title>Planning Poker App</title>
 		</Head>
 		<ChakraProvider resetCSS>
-			<QueryClientProvider client={client}>
-				<Component {...pageProps} />
-			</QueryClientProvider>
+			<AuthProvider>
+				<QueryClientProvider client={client}>
+					<Component {...pageProps} />
+				</QueryClientProvider>
+			</AuthProvider>
 		</ChakraProvider>
 	</>
 }

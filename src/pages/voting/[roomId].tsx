@@ -3,6 +3,7 @@ import { onValue, ref } from "firebase/database";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
+import PrivatePage from "../../components/PrivatePage";
 import { database } from "../../services/firebase";
 
 interface IResponseRoomDetails {
@@ -12,7 +13,7 @@ interface IResponseRoomDetails {
 }
 
 
-export default function VotingPage() {
+function VotingPage() {
 	const [members, setMembers] = useState<string[]>([]);
 	const router = useRouter();
 	const toast = useToast();
@@ -27,7 +28,7 @@ export default function VotingPage() {
 	});
 
 	const copyToClipboard = () => {
-		navigator.clipboard.writeText(`${window.location.origin}/join-room/${roomId}`).then(() => {
+		navigator.clipboard.writeText(`${window.location.origin}/join-room?roomId=${roomId}`).then(() => {
 			toast({
 				variant: "subtle",
 				status: "success",
@@ -65,3 +66,5 @@ export default function VotingPage() {
 	);
 
 }
+
+export default PrivatePage(VotingPage);
