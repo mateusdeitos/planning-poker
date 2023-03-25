@@ -1,51 +1,52 @@
-import { Flex, useToast, Button } from "@chakra-ui/react";
-import { onValue, ref } from "firebase/database";
+import { Button, Flex, useToast } from "@chakra-ui/react";
+import axios, { AxiosError } from "axios";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
-import { useQuery } from "react-query";
+import { useEffect } from "react";
+import { useMutation } from "react-query";
 import PrivatePage from "../../components/PrivatePage";
-import { database } from "../../services/firebase";
-
-interface IResponseRoomDetails {
-	members: string[],
-	authorName: string,
-	roomName: string;
-}
-
+import { useAuth } from "../../context/AuthContext";
+import { useCopyToClipboard } from "../../hooks/useCopyToClipboard";
+import { useRoomDetails } from "../../hooks/useRoomDetails";
+import { useRoomMembers } from "../../hooks/useRoomMembers";
 
 function VotingPage() {
-	const [members, setMembers] = useState<string[]>([]);
+	const { user, isLoading: isLoadingAuth } = useAuth();
 	const router = useRouter();
 	const toast = useToast();
 	const roomId = Array.isArray(router.query.roomId) ? router.query.roomId[0] : router.query.roomId;
-	const { isLoading, isError, error } = useQuery<any, Error>("room", () => fetch(`/api/room/${roomId}`).then(res => res.json()), {
-		enabled: !!roomId,
-		refetchOnWindowFocus: false,
-		onSuccess: (data: IResponseRoomDetails) => {
-			// console.log(data);
-			setMembers(data.members);
-		}
-	});
+	const [room, { isError, isLoading, error }] = useRoomDetails(roomId)
+	const [members] = useRoomMembers(roomId);
+	const copyToClipboard = useCopyToClipboard(
+		`${window.location.origin}/join-room?roomId=${roomId}`,
+		"URL copiada para a área de transferência"
+	);
 
-	const copyToClipboard = () => {
-		navigator.clipboard.writeText(`${window.location.origin}/join-room?roomId=${roomId}`).then(() => {
+	const leaveRoom = useMutation({
+		mutationFn: () => axios.post(`/api/leave-room/${roomId}`, { user }),
+		onSuccess: () => router.push(`/`),
+		onError: (error: AxiosError<string>) => {
 			toast({
-				variant: "subtle",
-				status: "success",
-				title: "URL copiada para a área de transferência",
+				title: 'Ocorreu um erro.',
+				description: error?.response?.data,
+				status: 'error',
 			})
-		});
-	}
+		}
+	})
+
+	const loading = isLoading || isLoadingAuth;
+	const userIsRoomAuthor = room?.author?.uid === user.uid;
 
 	useEffect(() => {
-		if (roomId) {
-			const unsubscribe = onValue(ref(database, `rooms/${roomId}/members`), (snapshot) => {
-				setMembers(snapshot.val());
-			});
+		if (loading) return;
+		if (!members?.length) return;
+		const isInRoom = members?.some(member => member.uid === user.uid);
+		if (isInRoom) return;
 
-			return () => unsubscribe();
-		}
-	}, [roomId])
+		router.push(`/join-room?roomId=${roomId}`);
+
+	}, [members, loading]);
+
+	if (loading) return null;
 
 	return (
 		<Flex
@@ -55,13 +56,13 @@ function VotingPage() {
 			justifyContent="center"
 		>
 			<h1>Voting Page</h1>
-			<p>Room ID: {roomId}</p>
 			{isLoading && <p>Loading...</p>}
 			{isError && <p>Error: {error.message}</p>}
-			{members && <ul>
-				{members && members.map(member => <li key={member}>{member}</li>)}
+			{!!members?.length && <ul>
+				{members.map(member => <li key={member.uid}>{member.email}</li>)}
 			</ul>}
-			<Button variant="link" onClick={copyToClipboard}>Invite colleagues to the room</Button>
+			{!userIsRoomAuthor && <Button variant="solid" onClick={() => leaveRoom.mutate()}>Leave room</Button>}
+			<Button variant="link" onClick={copyToClipboard}>Invite people to the room</Button>
 		</Flex>
 	);
 

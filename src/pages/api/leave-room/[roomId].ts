@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { isUser } from "../../../models/User";
-import { joinRoom } from "../../../services/firebase/room-services";
+import { leaveRoom } from "../../../services/firebase/room-services";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
 	if (req.method !== "POST") {
@@ -19,7 +19,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 	}
 
 	try {
-		await joinRoom(Array.isArray(roomId) ? roomId[0] : roomId, user);
+		await leaveRoom(Array.isArray(roomId) ? roomId[0] : roomId, user.uid);
 
 		return res.status(200).send("Joined room");
 	} catch (e) {

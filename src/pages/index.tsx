@@ -15,7 +15,13 @@ function Home() {
 		try {
 			const response = await (await fetch("/api/create-room", {
 				method: "POST",
-				body: JSON.stringify(values),
+				body: JSON.stringify({
+					roomName: values.roomName,
+					user: {
+						...user,
+						displayName: values.authorName
+					}
+				}),
 				headers: {
 					"Content-Type": "application/json",
 				}

@@ -1,30 +1,28 @@
-import { Button, Flex, FormControl, FormLabel, Input, Text, VStack } from "@chakra-ui/react";
+import { Button, Flex, FormControl, FormLabel, Input, Text, useToast, VStack } from "@chakra-ui/react";
+import axios, { AxiosError } from "axios";
 import { useRouter } from "next/router";
 import { useMutation } from "react-query";
 import PrivatePage from "../../components/PrivatePage";
 import { useAuth } from "../../context/AuthContext";
 import { useForm } from "../../hooks/useForm";
-import Login from "../login";
-
-const joinRoom = async (roomId: string, memberName: string) => {
-	return fetch(`/api/join-room/${roomId}`, {
-		method: "POST",
-		headers: {
-			"Content-Type": "application/json",
-		},
-		body: JSON.stringify({
-			memberName,
-		}),
-	});
-}
+import { App } from "../../types";
 
 function JoinRoom() {
 	const { user } = useAuth();
 	const { register, getValues } = useForm({ defaultValues: { memberName: user.displayName } });
 	const router = useRouter();
+	const toast = useToast();
 	const roomId = Array.isArray(router.query.roomId) ? router.query.roomId[0] : router.query.roomId;
-	const { mutateAsync, status, error } = useMutation((memberName: string) => joinRoom(roomId, memberName), {
+	const { mutate, status } = useMutation({
+		mutationFn: (user: App.User) => axios.post(`/api/join-room/${roomId}`, { user }),
 		onSuccess: () => router.push(`/voting/${roomId}`),
+		onError: (error: AxiosError<string>) => {
+			toast({
+				title: 'Ocorreu um erro.',
+				description: error?.response?.data,
+				status: 'error',
+			})
+		}
 	});
 
 	if (!roomId) {
@@ -47,22 +45,16 @@ function JoinRoom() {
 				</FormControl>
 				<Button variant="solid" isLoading={status === 'loading'} onClick={async () => {
 					if (getValues().memberName) {
-						await mutateAsync(getValues().memberName);
+						mutate({
+							...user,
+							displayName: getValues().memberName,
+						});
 					}
 				}}>Join the room</Button>
 			</VStack >
 		</Flex>
 	);
 
-}
-
-function Wrapper() {
-	const { user } = useAuth();
-	if (!user) {
-		return <Login />
-	}
-
-	return <JoinRoom />
 }
 
 export default PrivatePage(JoinRoom);
