@@ -4,11 +4,18 @@ import { App } from '../../types';
 
 export const createRoom = async (roomName: string, user: App.User) => {
 	const author = User(user);
-	return pushData("rooms", {
+	const room: App.Room = {
 		roomName,
 		author,
-		members: [author]
-	});
+		members: [author],
+		cards: ["?", "0", "1/2", "1", "2", "3", "5", "8", "13", "20", "40", "100"].map(value => ({
+			value,
+			label: value,
+		})),
+		voting: {},
+	}
+
+	return pushData("rooms", room);
 }
 
 export const joinRoom = async (roomId: string, member: App.User) => {

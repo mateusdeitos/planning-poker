@@ -4,7 +4,7 @@ import { App } from "../types";
 import { useSubscribeToRef } from "./useSubscribeToRef";
 
 export const useRoomDetails = (roomId: string) => {
-	const [room, setRoom] = useState<Partial<App.RoomDetailsResponse>>({});
+	const [room, setRoom] = useState<Partial<App.Room>>({});
 	const query = useQuery<any, Error>("room", () => fetch(`/api/room/${roomId}`).then(res => res.json()), {
 		enabled: !!roomId,
 		refetchOnWindowFocus: false,
@@ -14,7 +14,7 @@ export const useRoomDetails = (roomId: string) => {
 		}
 	});
 
-	useSubscribeToRef<App.RoomDetailsResponse>(`rooms/${roomId}`, (room) => {
+	useSubscribeToRef<App.Room>(`rooms/${roomId}`, (room) => {
 		setRoom(room);
 	})
 
