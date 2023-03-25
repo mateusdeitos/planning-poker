@@ -35,18 +35,18 @@ function VotingPage() {
 
 	const loading = isLoading || isLoadingAuth;
 	const userIsRoomAuthor = room?.author?.uid === user.uid;
+	const isInRoom = members?.some(member => member.uid === user.uid);
 
 	useEffect(() => {
 		if (loading) return;
 		if (!members?.length) return;
-		const isInRoom = members?.some(member => member.uid === user.uid);
 		if (isInRoom) return;
 
 		router.push(`/join-room?roomId=${roomId}`);
 
-	}, [members, loading]);
+	}, [members, loading, isInRoom]);
 
-	if (loading) return null;
+	if (loading || !isInRoom) return null;
 
 	return (
 		<Flex
