@@ -1,7 +1,7 @@
 import { Flex, useColorModeValue, useToast } from "@chakra-ui/react";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { VotingCard } from "../VotingCard";
 import { useAuth } from "../../context/AuthContext";
 import { useRoomDetails } from "../../hooks/useRoomDetails";
@@ -14,8 +14,11 @@ export const CardOptions = () => {
 	const toast = useToast();
 	const roomId = useRoomIdFromRouter();
 	const { data: room, isSuccess } = useRoomDetails(roomId);
-	const memberQuery = useMember(roomId, user.uid);
-	const selected = memberQuery?.data?.vote;
+	const memberQuery = useMember(roomId, user.uid, data => {
+		setSelected(data.vote);
+	});
+
+	const [selected, setSelected] = useState<App.User["vote"]>(memberQuery?.data?.vote);
 	const debounceMutationRef = useRef<NodeJS.Timeout | null>(null);
 	const cardBgColor = useColorModeValue("white", "gray.700")
 
@@ -28,21 +31,16 @@ export const CardOptions = () => {
 		user
 	}));
 
-	const optimisticUpdate = (value: App.Card["value"]) => {
+	const toggle = (value: App.Card["value"]) => {
 		if (selected === value) {
-			memberQuery.setUnvote();
-			return "un-vote";
+			setSelected(null);
+			return;
 		}
 
-		memberQuery.setVote(value);
-		return "vote";
-	};
+		setSelected(value);
+	}
 
-	const onSelectCard = (value: App.Card["value"]) => {
-		const isLoading = voteMutation.isLoading || unVoteMutation.isLoading;
-		if (isLoading) return;
-
-		const action = optimisticUpdate(value);
+	useEffect(() => {
 		clearTimeout(debounceMutationRef.current);
 		debounceMutationRef.current = setTimeout(() => {
 			const onError = () => {
@@ -54,14 +52,16 @@ export const CardOptions = () => {
 				memberQuery.invalidate();
 			};
 
-			if (action === "un-vote") {
+			if (selected === null) {
 				unVoteMutation.mutate(null, { onError });
 				return;
 			}
 
-			voteMutation.mutate(value, { onError });
+			voteMutation.mutate(selected, { onError });
 		}, 500);
-	};
+
+		return () => clearTimeout(debounceMutationRef.current)
+	}, [selected]);
 
 	if (!isSuccess) return null;
 	if (!memberQuery.isSuccess) return null;
@@ -86,7 +86,7 @@ export const CardOptions = () => {
 					h={100}
 					w={75}
 					selected={isSelected}
-					onClick={() => onSelectCard(card.value)}
+					onClick={() => toggle(card.value)}
 					border="2px solid"
 					borderColor={isSelected ? "green.300" : cardBgColor}
 					bg={cardBgColor}
