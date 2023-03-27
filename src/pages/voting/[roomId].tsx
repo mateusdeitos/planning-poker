@@ -1,5 +1,6 @@
 import { Flex } from "@chakra-ui/react";
-import { useState } from "react";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 import PrivatePage from "../../components/PrivatePage";
 import { Header } from "../../components/Voting/Header";
 import { Members } from "../../components/Voting/Members";
@@ -13,38 +14,46 @@ import { App } from "../../types";
 function VotingPage() {
 	const { user, isLoading: isLoadingAuth } = useAuth();
 	const roomId = useRoomIdFromRouter();
-	// const [, { isError, isLoading, error }] = useRoomDetails(roomId)
-	const members: App.User[] = [
-		{
-			"displayName": "Mateus Campos Deitos",
-			"email": "matdeitos@gmail.com",
-			"photoURL": "https://lh3.googleusercontent.com/a-/AOh14Gj9UapsiyM90aaYSPCK5uTGBfrzANPdQ3FwXfJo_VI=s96-c",
-			"uid": "dAH4UIcyifUlikvxeebRZFInodF2",
-			vote: null,
-			voteStatus: "not-voted",
-		}
-	];
+	const router = useRouter();
+	const { data: room, isError, isLoading, error } = useRoomDetails(roomId, {
+		onEmptySnapshot() {
+			router.push("/");
+		},
+	});
 
-	// const loading = isLoading || isLoadingAuth;
-	// const isInRoom = members?.some(member => member.uid === user.uid);
+	// const members: App.Room["members"] = new Array(50).fill({
+	// 	"displayName": "Mateus Campos Deitos",
+	// 	"email": "matdeitos@gmail.com",
+	// 	"photoURL": "https://lh3.googleusercontent.com/a-/AOh14Gj9UapsiyM90aaYSPCK5uTGBfrzANPdQ3FwXfJo_VI=s96-c",
+	// 	"uid": "dAH4UIcyifUlikvxeebRZFInodF2",
+	// 	vote: null,
+	// 	voteStatus: "not-voted",
+	// }).reduce((acc, member, index) => {
+	// 	acc[index.toString()] = member;
+	// 	return acc;
+	// }, {});
 
-	// useEffect(() => {
-	// 	if (loading) return;
-	// 	if (!members?.length) return;
-	// 	if (isInRoom) return;
 
-	// 	router.push(`/join-room?roomId=${roomId}`);
+	const loading = isLoading || isLoadingAuth;
+	const isInRoom = !!room?.members?.[user?.uid];
 
-	// }, [members, loading, isInRoom]);
+	useEffect(() => {
+		if (loading) return;
+		if (!room?.members) return;
+		if (isInRoom) return;
 
-	// if (loading || !isInRoom) return null;
+		router.push(`/join-room?roomId=${roomId}`);
+
+	}, [loading, isInRoom]);
+
+	if (loading || !isInRoom) return null;
 
 	return (
 		<Wrapper>
 			<Header />
-			{/* {isLoading && <p>Loading...</p>}
-			{isError && <p>Error: {error.message}</p>} */}
-			{!!members?.length && <Members members={members} />}
+			{isLoading && <p>Loading...</p>}
+			{isError && <p>Error: {error.message}</p>}
+			{!!room?.members && <Members members={room.members} />}
 			<CardOptions />
 		</Wrapper>
 	);
@@ -68,7 +77,8 @@ const CardOptions = () => {
 			wrap="nowrap"
 			overflowX="auto"
 			w="100%"
-			p="15px"
+			px={50}
+			py={10}
 			minWidth="calc(100vw - 32px)"
 			justifyContent="flex-start"
 			gap="8px"

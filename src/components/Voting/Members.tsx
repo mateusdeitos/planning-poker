@@ -1,15 +1,20 @@
+import { Flex } from "@chakra-ui/react";
 import { App } from "../../types";
-import { Grid, GridItem } from "@chakra-ui/react";
 import { MemberCard } from "./MemberCard";
 
 type MembersProps = {
-	members: App.User[];
+	members: App.Room["members"];
 };
 
 export const Members = ({ members }: MembersProps) => {
-	return <Grid w="100%" flex={1} templateColumns={`repeat(${members.length}, 1fr)`} gap={4} p={50}>
-		{members.map(member => <GridItem key={member.uid} colSpan={1}>
-			<MemberCard member={member} />
-		</GridItem>)}
-	</Grid>;
+	return <Flex
+		w="100%"
+		flex={1}
+		gap={30}
+		wrap="wrap"
+		p={50}
+		overflowY="auto"
+	>
+		{Object.values(members).map((member, index) => <MemberCard key={index} member={member} />)}
+	</Flex>;
 };

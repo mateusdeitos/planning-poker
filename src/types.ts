@@ -13,7 +13,7 @@ export declare module App {
 
 
 	type Room = {
-		members: App.User[],
+		members: Record<User["uid"], App.User>,
 		author: App.User,
 		roomName: string;
 		cards: App.Card[],

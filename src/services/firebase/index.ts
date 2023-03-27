@@ -26,8 +26,8 @@ export const updateData = async (updates: Record<string, any>) => {
 	return update(ref(getDatabase(firebaseApp)), updates);
 }
 
-export const getData = async (refId: string) => {
-	return get(child(ref(getDatabase(firebaseApp)), refId)).then(snapshot => snapshot.val());
+export const getData = async <T>(refId: string) => {
+	return get(child(ref(getDatabase(firebaseApp)), refId)).then(snapshot => snapshot.val() as T);
 }
 
 export const auth = getAuth(firebaseApp);

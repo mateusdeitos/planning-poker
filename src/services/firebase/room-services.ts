@@ -7,7 +7,9 @@ export const createRoom = async (roomName: string, user: App.User) => {
 	const room: App.Room = {
 		roomName,
 		author,
-		members: [author],
+		members: {
+			[author.uid]: author,
+		},
 		cards: [
 			{ label: "?", value: null },
 			{ label: "0", value: 0 },
@@ -29,16 +31,19 @@ export const createRoom = async (roomName: string, user: App.User) => {
 }
 
 export const joinRoom = async (roomId: string, member: App.User) => {
-	const room = await getData("rooms/" + roomId);
+	const room = await getRoomDetails(roomId);
 	if (!room) {
 		throw new Error("Room not found");
 	}
 
-	if (room.members?.find((m: App.User) => m.uid === member.uid)) {
-		throw new Error("User already in room");
+	if (!!room.members[member.uid]) {
+		return Promise.resolve();
 	}
 
-	const members = [...room.members, User(member)];
+	const members: App.Room["members"] = {
+		...room.members,
+		[member.uid]: User(member)
+	};
 
 	return updateData({
 		[`rooms/${roomId}/members`]: members,
@@ -46,12 +51,13 @@ export const joinRoom = async (roomId: string, member: App.User) => {
 }
 
 export const leaveRoom = async (roomId: string, memberId: string) => {
-	const room = await getData("rooms/" + roomId);
+	const room = await getRoomDetails(roomId);
 	if (!room) {
 		throw new Error("Room not found");
 	}
 
-	const members = room.members.filter((m: App.User) => m.uid !== memberId);
+	const members = { ...room.members };
+	delete members[memberId];
 
 	return updateData({
 		[`rooms/${roomId}/members`]: members,
@@ -59,6 +65,6 @@ export const leaveRoom = async (roomId: string, memberId: string) => {
 }
 
 export const getRoomDetails = async (roomId: string) => {
-	return getData(`rooms/${roomId}`);
+	return getData<App.Room | null>(`rooms/${roomId}`);
 }
 
