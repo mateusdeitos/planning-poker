@@ -70,7 +70,7 @@ export const changeState = async (roomId: string, phase: App.Room["votingState"]
 		throw new Error("Room not found");
 	}
 
-	const updatedRoom: typeof room = structuredClone(room);
+	const updatedRoom: typeof room = JSON.parse(JSON.stringify(room));
 	updatedRoom.votingState = phase;
 
 	if (phase === "voting") {

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Flex, Heading } from "@chakra-ui/react";
-import { SECONDS_TO_REVEAL } from "../../pages/constants";
+import { SECONDS_TO_REVEAL } from "../../constants";
 
 export const RevealingOverlay = () => {
 	const [count, setCount] = useState(SECONDS_TO_REVEAL);
