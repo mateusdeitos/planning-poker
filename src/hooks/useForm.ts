@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 
-export const useForm = ({ defaultValues = {} }: { defaultValues: Record<string, any> }) => {
+export const useForm = <T extends Record<string, any>>({ defaultValues = {} }: { defaultValues: Partial<T> }) => {
 	const [values, setValues] = useState(defaultValues);
 
 	return {
@@ -16,7 +16,7 @@ export const useForm = ({ defaultValues = {} }: { defaultValues: Record<string, 
 				value: values[name],
 			}
 		},
-		getValues: () => values,
+		getValues: () => values as Required<T>,
 		getValue: (name: keyof typeof defaultValues) => values[name],
 		reset: () => setValues(defaultValues),
 	}

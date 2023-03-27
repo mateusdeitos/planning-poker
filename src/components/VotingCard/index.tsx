@@ -1,4 +1,5 @@
-import { Card, CardBody, CardProps, Heading } from "@chakra-ui/react";
+import { Card, CardBody, CardProps, Heading, useColorModeValue } from "@chakra-ui/react";
+import { IconBrandGit } from "@tabler/icons-react";
 import { App } from "../../types";
 
 type VotingCardProps = CardProps & {
@@ -26,12 +27,16 @@ type RevealedBodyProps = {
 }
 
 const RevealedBody = ({ value, selected = false }: RevealedBodyProps) => {
+	const bg = useColorModeValue(
+		selected ? "green.400" : "gray.100",
+		selected ? "green.400" : "gray.600"
+	);
 	return <CardBody
 		display="flex"
 		flexDirection="column"
 		alignItems="center"
 		justifyContent="center"
-		backgroundColor={selected ? "green.400" : "gray.100"}
+		backgroundColor={bg}
 		transition="background-color 0.2s ease-in-out"
 		borderRadius="md"
 	>
@@ -53,12 +58,17 @@ const VotedBody = () => {
 }
 
 const NotVotedBody = () => {
+	const bg = useColorModeValue(
+		"gray.200",
+		"gray.600"
+	);
+
 	return <CardBody
 		display="flex"
 		flexDirection="column"
 		alignItems="center"
 		justifyContent="center"
-		backgroundColor="gray.200"
+		backgroundColor={bg}
 		borderRadius="md"
 	/>
 }

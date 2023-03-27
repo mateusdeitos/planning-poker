@@ -1,9 +1,9 @@
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import PrivatePage from "../../components/PrivatePage";
-import { Header } from "../../components/Voting/Header";
+import { Header } from "../../components/Header";
 import { Members } from "../../components/Voting/Members";
-import { Wrapper } from "../../components/Voting/Wrapper";
+import { Wrapper } from "../../components/Wrapper";
 import { useAuth } from "../../context/AuthContext";
 import { useRoomDetails } from "../../hooks/useRoomDetails";
 import { useRoomIdFromRouter } from "../../hooks/useRoomIdFromRouter";

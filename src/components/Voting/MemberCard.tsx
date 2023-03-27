@@ -12,7 +12,7 @@ export const MemberCard = ({ member }: { member: App.User; }) => {
 	if (!isSuccess) return null;
 
 	return <VotingCard>
-		<CardHeader pos="absolute" top="-38px" left="-36px">
+		<CardHeader pos="absolute" top="-43px" left="14px">
 			<Tooltip label={member.displayName} hasArrow>
 				<Avatar
 					size="sm"

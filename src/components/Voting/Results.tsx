@@ -1,12 +1,13 @@
+import { Flex, Stat, StatHelpText, StatLabel, StatNumber, useColorModeValue } from "@chakra-ui/react";
 import { useMemo } from "react";
 import { useRoomDetails } from "../../hooks/useRoomDetails";
 import { useRoomIdFromRouter } from "../../hooks/useRoomIdFromRouter";
-import { Flex, Stat, StatHelpText, StatLabel, StatNumber } from "@chakra-ui/react";
 import { App } from "../../types";
 
 export const Results = () => {
 	const roomId = useRoomIdFromRouter();
 	const { data: room } = useRoomDetails(roomId);
+	const statBg = useColorModeValue("gray.200", "gray.700");
 
 	interface IResults {
 		average: number;
@@ -52,7 +53,7 @@ export const Results = () => {
 	return (
 		<Flex
 			direction="row"
-			wrap="nowrap"
+			wrap="wrap"
 			overflowX="auto"
 			w="100%"
 			px={50}
@@ -61,26 +62,26 @@ export const Results = () => {
 			gap="8px"
 			mb={4}
 		>
-			<Stat bg="gray.200" p={4} borderRadius={4} maxW={100}>
+			<Stat bg={statBg} p={4} borderRadius={4} w={100}>
 				<StatLabel>Total</StatLabel>
 				<StatNumber>{results.count.toFixed(2)}</StatNumber>
 			</Stat>
-			<Stat bg="gray.200" p={4} borderRadius={4} maxW={100}>
+			<Stat bg={statBg} p={4} borderRadius={4} w={100}>
 				<StatLabel>Média</StatLabel>
 				<StatNumber>{results.average.toFixed(2)}</StatNumber>
 			</Stat>
-			{!!results.highest && (
-				<Stat bg="gray.200" p={4} borderRadius={4} maxW={300}>
-					<StatLabel>Maior</StatLabel>
-					<StatNumber>{results.highest.vote}</StatNumber>
-					<StatHelpText>{results.highest.displayName}</StatHelpText>
-				</Stat>
-			)}
 			{!!results.lowest && (
-				<Stat bg="gray.200" p={4} borderRadius={4} maxW={300}>
+				<Stat bg={statBg} p={4} borderRadius={4} w={300}>
 					<StatLabel>Menor</StatLabel>
 					<StatNumber>{results.lowest.vote}</StatNumber>
 					<StatHelpText>{results.lowest.displayName}</StatHelpText>
+				</Stat>
+			)}
+			{!!results.highest && (
+				<Stat bg={statBg} p={4} borderRadius={4} w={300}>
+					<StatLabel>Maior</StatLabel>
+					<StatNumber>{results.highest.vote}</StatNumber>
+					<StatHelpText>{results.highest.displayName}</StatHelpText>
 				</Stat>
 			)}
 		</Flex>
