@@ -1,15 +1,15 @@
-import { Button, Flex, FormControl, FormLabel, Input, Text, useToast, VStack } from "@chakra-ui/react";
+import { Button, Flex, FormControl, FormErrorMessage, FormLabel, Input, Text, useToast, VStack } from "@chakra-ui/react";
 import axios, { AxiosError } from "axios";
 import { useRouter } from "next/router";
 import { useMutation } from "@tanstack/react-query";
 import PrivatePage from "../../components/PrivatePage";
 import { useAuth } from "../../context/AuthContext";
-import { useForm } from "../../hooks/useForm";
+import { useForm } from "react-hook-form";
 import { App } from "../../types";
 
 function JoinRoom() {
 	const { user } = useAuth();
-	const { register, getValues } = useForm({ defaultValues: { memberName: user.displayName } });
+	const { register, handleSubmit, formState } = useForm({ defaultValues: { memberName: user.displayName } });
 	const router = useRouter();
 	const toast = useToast();
 	const roomId = Array.isArray(router.query.roomId) ? router.query.roomId[0] : router.query.roomId;
@@ -39,20 +39,32 @@ function JoinRoom() {
 	return (
 		<Flex h="100vh" direction="row" alignItems="center" justifyContent="center">
 			<VStack spacing={4}>
-				<FormControl>
+				<FormControl isInvalid={!!formState.errors?.memberName?.message}>
 					<FormLabel htmlFor="memberName">Como você quer ser chamado</FormLabel>
-					<Input type="text" id="memberName" {...register("memberName")} />
+					<Input type="text" id="memberName" {...register("memberName", {
+						required: {
+							value: true,
+							message: "Campo obrigatório"
+						},
+						minLength: {
+							value: 3,
+							message: "Mínimo de 3 caracteres"
+						},
+						maxLength: {
+							value: 20,
+							message: "Máximo de 20 caracteres"
+						}
+					})} />
+					<FormErrorMessage>{formState.errors?.memberName?.message}</FormErrorMessage>
 				</FormControl>
-				<Button variant="solid" isLoading={status === 'loading'} onClick={async () => {
-					if (getValues().memberName) {
-						mutate({
-							...user,
-							displayName: getValues().memberName,
-							vote: null,
-							voteStatus: "not-voted"
-						});
-					}
-				}}>Join the room</Button>
+				<Button variant="solid" isLoading={status === 'loading'} onClick={handleSubmit((values) => {
+					mutate({
+						...user,
+						displayName: values.memberName,
+						vote: null,
+						voteStatus: "not-voted"
+					});
+				})}>Join the room</Button>
 			</VStack >
 		</Flex>
 	);

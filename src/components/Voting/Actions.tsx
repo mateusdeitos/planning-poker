@@ -66,6 +66,7 @@ export const Actions = () => {
 
 		{votingState === "finished" && (
 			<ResponsiveButton
+				colorScheme="blue"
 				leftIcon={<IconDice />}
 				isLoading={mutation.isLoading}
 				onClick={() => mutation.mutate("voting")}

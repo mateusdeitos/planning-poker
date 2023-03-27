@@ -1,4 +1,4 @@
-import { Button, Flex, FormControl, FormLabel, Input, VStack, useToast } from "@chakra-ui/react";
+import { Button, Flex, FormControl, FormLabel, Input, VStack, useToast, FormErrorMessage } from "@chakra-ui/react";
 import { useMutation } from "@tanstack/react-query";
 import axios, { AxiosError } from "axios";
 import { useRouter } from "next/router";
@@ -7,7 +7,7 @@ import { Header } from "../components/Header";
 import PrivatePage from "../components/PrivatePage";
 import { Wrapper } from "../components/Wrapper";
 import { useAuth } from "../context/AuthContext";
-import { useForm } from "../hooks/useForm";
+import { useForm } from "react-hook-form"
 
 type Form = {
 	roomName: string;
@@ -18,9 +18,13 @@ function Home() {
 	const toast = useToast();
 	const { user } = useAuth();
 	const [lockButton, setLockButton] = useState(false);
-	const { register, getValues } = useForm<Form>({
-		defaultValues: { roomName: "Teste", authorName: user.displayName }
+	const { register, handleSubmit, formState } = useForm<Form>({
+		defaultValues: {
+			roomName: "",
+			authorName: user.displayName?.split(" ")[0] || ""
+		}
 	});
+
 	const router = useRouter();
 
 	const createRoom = useMutation({
@@ -55,27 +59,51 @@ function Home() {
 		}
 	})
 
-	const handleCriarSala = async () => {
+	const handleCriarSala = handleSubmit((values) => {
 		setLockButton(true);
-		const values = getValues();
 		createRoom.mutate(values, {
 			onError() {
 				setLockButton(false);
 			}
 		});
-	}
+	})
 
 	return <Wrapper>
 		<Header />
 		<Flex h="100vh" direction="row" alignItems="center" justifyContent="center">
 			<VStack spacing={4}>
-				<FormControl>
+				<FormControl isInvalid={!!formState.errors?.roomName?.message}>
 					<FormLabel htmlFor="roomName">Nome da sala</FormLabel>
-					<Input type="text" id="roomName" {...register("roomName")} />
+					<Input type="text" id="roomName" {...register("roomName", {
+						required: "Campo obrigatório",
+						minLength: {
+							value: 3,
+							message: "Mínimo de 3 caracteres"
+						},
+						maxLength: {
+							value: 50,
+							message: "Máximo de 50 caracteres"
+						}
+					})} />
+					<FormErrorMessage>{formState.errors?.roomName?.message}</FormErrorMessage>
 				</FormControl>
-				<FormControl>
+				<FormControl isInvalid={!!formState.errors?.authorName?.message}>
 					<FormLabel htmlFor="authorName">Como você quer ser chamado</FormLabel>
-					<Input type="text" id="authorName" {...register("authorName")} />
+					<Input type="text" id="authorName" {...register("authorName", {
+						required: {
+							value: true,
+							message: "Campo obrigatório"
+						},
+						minLength: {
+							value: 3,
+							message: "Mínimo de 3 caracteres"
+						},
+						maxLength: {
+							value: 20,
+							message: "Máximo de 20 caracteres"
+						}
+					})} />
+					<FormErrorMessage>{formState.errors?.authorName?.message}</FormErrorMessage>
 				</FormControl>
 				<Button
 					w="100%"

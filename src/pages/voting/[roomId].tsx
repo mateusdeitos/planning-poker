@@ -11,6 +11,7 @@ import { CardOptions } from "../../components/Voting/CardOptions";
 import { RevealingOverlay } from "../../components/Voting/RevealingOverlay";
 import { Actions } from "../../components/Voting/Actions";
 import { Results } from "../../components/Voting/Results";
+import { Text } from "@chakra-ui/react";
 
 export const SECONDS_TO_REVEAL = 3;
 
@@ -25,20 +26,6 @@ function VotingPage() {
 	});
 
 	const isRevealing = room?.votingState === "revealing";
-
-	// const members: App.Room["members"] = new Array(50).fill({
-	// 	"displayName": "Mateus Campos Deitos",
-	// 	"email": "matdeitos@gmail.com",
-	// 	"photoURL": "https://lh3.googleusercontent.com/a-/AOh14Gj9UapsiyM90aaYSPCK5uTGBfrzANPdQ3FwXfJo_VI=s96-c",
-	// 	"uid": "dAH4UIcyifUlikvxeebRZFInodF2",
-	// 	vote: null,
-	// 	voteStatus: "not-voted",
-	// }).reduce((acc, member, index) => {
-	// 	acc[index.toString()] = member;
-	// 	return acc;
-	// }, {});
-
-
 	const loading = isLoading || isLoadingAuth;
 	const isInRoom = !!room?.members?.[user?.uid];
 
@@ -55,7 +42,7 @@ function VotingPage() {
 
 	return (
 		<Wrapper>
-			<Header />
+			<Header subTitle={<Text>{room.roomName}</Text>} />
 			<Actions />
 			{isRevealing && <RevealingOverlay />}
 			{isLoading && <p>Loading...</p>}
