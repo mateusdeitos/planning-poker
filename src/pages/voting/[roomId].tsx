@@ -8,6 +8,10 @@ import { useAuth } from "../../context/AuthContext";
 import { useRoomDetails } from "../../hooks/useRoomDetails";
 import { useRoomIdFromRouter } from "../../hooks/useRoomIdFromRouter";
 import { CardOptions } from "../../components/Voting/CardOptions";
+import { RevealingOverlay } from "../../components/Voting/RevealingOverlay";
+import { Actions } from "../../components/Voting/Actions";
+
+export const SECONDS_TO_REVEAL = 3;
 
 function VotingPage() {
 	const { user, isLoading: isLoadingAuth } = useAuth();
@@ -18,6 +22,8 @@ function VotingPage() {
 			router.push("/");
 		},
 	});
+
+	const isRevealing = room?.votingState === "revealing";
 
 	// const members: App.Room["members"] = new Array(50).fill({
 	// 	"displayName": "Mateus Campos Deitos",
@@ -49,10 +55,12 @@ function VotingPage() {
 	return (
 		<Wrapper>
 			<Header />
+			<Actions />
+			{isRevealing && <RevealingOverlay />}
 			{isLoading && <p>Loading...</p>}
 			{isError && <p>Error: {error.message}</p>}
 			{!!room?.members && <Members members={room.members} />}
-			<CardOptions />
+			{room.votingState !== "finished" && <CardOptions />}
 		</Wrapper>
 	);
 }

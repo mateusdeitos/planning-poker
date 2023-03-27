@@ -64,6 +64,31 @@ export const leaveRoom = async (roomId: string, memberId: string) => {
 	});
 }
 
+export const changeState = async (roomId: string, phase: App.Room["votingState"]) => {
+	const room = await getRoomDetails(roomId);
+	if (!room) {
+		throw new Error("Room not found");
+	}
+
+	const updatedRoom: typeof room = structuredClone(room);
+	updatedRoom.votingState = phase;
+
+	if (phase === "voting") {
+		Object.keys(updatedRoom.members).forEach(memberId => {
+			if (!updatedRoom.members[memberId]) {
+				return;
+			}
+
+			updatedRoom.members[memberId].vote = null;
+			updatedRoom.members[memberId].voteStatus = "not-voted";
+		})
+	}
+
+	return updateData({
+		[`rooms/${roomId}`]: updatedRoom,
+	});
+}
+
 export const vote = async (roomId: string, memberId: string, vote: App.Card["value"]) => {
 	const room = await getRoomDetails(roomId);
 	if (!room) {

@@ -30,6 +30,8 @@ export const useRoomDetails = <S = App.Room>(roomId: string, options?: Options<S
 		queryClient.setQueryData<App.Room>(queryKey, room);
 	});
 
+	const invalidate = () => queryClient.invalidateQueries(queryKey);
+
 	const updateMember = (member: App.User) => {
 		queryClient.setQueryData<App.Room>(queryKey, (room) => {
 			if (!room) {
@@ -49,5 +51,6 @@ export const useRoomDetails = <S = App.Room>(roomId: string, options?: Options<S
 	return {
 		...query,
 		updateMember,
+		invalidate,
 	};
 }
