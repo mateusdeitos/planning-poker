@@ -11,7 +11,7 @@ export const createRoom = async (roomName: string, user: App.User) => {
 			[author.uid]: author,
 		},
 		cards: [
-			{ label: "?", value: null },
+			{ label: "?", value: "?" },
 			{ label: "0", value: 0 },
 			{ label: "1/2", value: 0.5 },
 			{ label: "1", value: 1 },
@@ -58,6 +58,44 @@ export const leaveRoom = async (roomId: string, memberId: string) => {
 
 	const members = { ...room.members };
 	delete members[memberId];
+
+	return updateData({
+		[`rooms/${roomId}/members`]: members,
+	});
+}
+
+export const vote = async (roomId: string, memberId: string, vote: App.Card["value"]) => {
+	const room = await getRoomDetails(roomId);
+	if (!room) {
+		throw new Error("Room not found");
+	}
+
+	if (!room.members[memberId]) {
+		throw new Error("Member not found");
+	}
+
+	const members = { ...room.members };
+	members[memberId].vote = vote;
+	members[memberId].voteStatus = "voted";
+
+	return updateData({
+		[`rooms/${roomId}/members`]: members,
+	});
+}
+
+export const unVote = async (roomId: string, memberId: string) => {
+	const room = await getRoomDetails(roomId);
+	if (!room) {
+		throw new Error("Room not found");
+	}
+
+	if (!room.members[memberId]) {
+		throw new Error("Member not found");
+	}
+
+	const members = { ...room.members };
+	members[memberId].vote = null;
+	members[memberId].voteStatus = "not-voted";
 
 	return updateData({
 		[`rooms/${roomId}/members`]: members,

@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { getRoomDetails } from "../../../services/firebase/room-services";
+import { getRoomDetails } from "../../../../services/firebase/room-services";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
 	if (req.method !== "GET") {

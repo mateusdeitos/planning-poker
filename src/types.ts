@@ -7,7 +7,7 @@ export declare module App {
 	}
 
 	type Card = {
-		value: number | null,
+		value: number | "?",
 		label: string,
 	}
 
