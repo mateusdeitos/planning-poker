@@ -6,6 +6,7 @@ import PrivatePage from "../../components/PrivatePage";
 import { useAuth } from "../../context/AuthContext";
 import { useForm } from "react-hook-form";
 import { App } from "../../types";
+import { useRoomDetails } from "../../hooks/useRoomDetails";
 
 function JoinRoom() {
 	const { user } = useAuth();
@@ -13,6 +14,14 @@ function JoinRoom() {
 	const router = useRouter();
 	const toast = useToast();
 	const roomId = Array.isArray(router.query.roomId) ? router.query.roomId[0] : router.query.roomId;
+	const { isLoading } = useRoomDetails(roomId, {
+		onError: (error: AxiosError) => {
+			if (error.response.status == 404) {
+				router.push("404")
+			}
+		}
+	});
+
 	const { mutate, status } = useMutation({
 		mutationFn: (user: App.User) => axios.post(`/api/join-room/${roomId}`, { user }),
 		onSuccess: () => router.push(`/voting/${roomId}`),
@@ -35,6 +44,8 @@ function JoinRoom() {
 			<Text>Deu erro :(</Text>
 		</Flex>
 	}
+
+	if (isLoading) return null;
 
 	return (
 		<Flex h="100vh" direction="row" alignItems="center" justifyContent="center">

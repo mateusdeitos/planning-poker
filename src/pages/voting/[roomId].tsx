@@ -13,8 +13,6 @@ import { Actions } from "../../components/Voting/Actions";
 import { Results } from "../../components/Voting/Results";
 import { Text } from "@chakra-ui/react";
 
-export const SECONDS_TO_REVEAL = 3;
-
 function VotingPage() {
 	const { user, isLoading: isLoadingAuth } = useAuth();
 	const roomId = useRoomIdFromRouter();
@@ -22,6 +20,11 @@ function VotingPage() {
 	const { data: room, isError, isLoading, error } = useRoomDetails(roomId, {
 		onEmptySnapshot() {
 			router.push("/");
+		},
+		onError(error) {
+			if (error.response.status == 404) {
+				router.push("/404");
+			}
 		},
 	});
 

@@ -1,23 +1,26 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { App } from "../types";
 import { useSubscribeToRef } from "./useSubscribeToRef";
 
 type Options<S = any> = {
 	onEmptySnapshot?: () => void;
+	onError?: (error: AxiosError<string>) => void;
 	select?: (room: App.Room) => S;
 }
 
 export const useRoomDetails = <S = App.Room>(roomId: string, options?: Options<S>) => {
 	const queryClient = useQueryClient();
 	const queryKey = ["room", roomId];
-	const query = useQuery<App.Room, Error, S>(queryKey,
+	const query = useQuery<App.Room, AxiosError<string>, S>(queryKey,
 		() => axios.get(`/api/room/${roomId}`).then(res => res.data),
 		{
 			enabled: !!roomId,
+			retry: false,
 			refetchOnWindowFocus: false,
 			staleTime: Infinity,
 			select: options?.select ?? ((room) => room as unknown as S),
+			onError: options?.onError,
 		}
 	);
 

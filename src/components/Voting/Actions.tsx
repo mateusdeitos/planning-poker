@@ -6,7 +6,7 @@ import { IconDice, IconDoorExit, IconLink, IconPlayerPlay } from "@tabler/icons-
 import { useMutation } from "@tanstack/react-query";
 import axios, { AxiosError } from "axios";
 import { App } from "../../types";
-import { SECONDS_TO_REVEAL } from "../../pages/voting/[roomId]";
+import { SECONDS_TO_REVEAL } from "../../pages/constants";
 import router from "next/router";
 import { useCopyToClipboard } from "../../hooks/useCopyToClipboard";
 
