@@ -1,3 +1,19 @@
+# Intro
+
+This is an Planning Poker app that aims to help estimate story points of tasks during the sprint planning (scrum ceremony)
+
+The app uses Firebase Realtime Database's for the realtime communication between users inside a room.
+
+To be able to join a room, the user must sign-in using his Google account
+
+In the app, a user can:
+- create a room and invite others
+- join a room created by other user
+- inside a room, choose a card to vote in a round
+- get the average story points defined in a round by the users in the room
+
+# How to run
+
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started
