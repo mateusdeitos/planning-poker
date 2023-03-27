@@ -1,5 +1,5 @@
 import { ChakraProvider } from "@chakra-ui/react"
-import { QueryClientProvider, QueryClient } from 'react-query'
+import { QueryClientProvider, QueryClient } from "@tanstack/react-query"
 import Head from "next/head"
 import { AuthProvider } from "../context/AuthContext";
 

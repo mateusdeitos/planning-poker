@@ -15,7 +15,7 @@ const Context = createContext<AuthProps>({} as AuthProps);
 
 export const useAuth = () => useContext(Context);
 
-export const AuthProvider: React.FC = ({ children }) => {
+export const AuthProvider = ({ children }) => {
 	const router = useRouter();
 	const [user, isLoading] = useAuthState(auth);
 

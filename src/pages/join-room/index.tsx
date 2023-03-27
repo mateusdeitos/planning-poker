@@ -1,7 +1,7 @@
 import { Button, Flex, FormControl, FormLabel, Input, Text, useToast, VStack } from "@chakra-ui/react";
 import axios, { AxiosError } from "axios";
 import { useRouter } from "next/router";
-import { useMutation } from "react-query";
+import { useMutation } from "@tanstack/react-query";
 import PrivatePage from "../../components/PrivatePage";
 import { useAuth } from "../../context/AuthContext";
 import { useForm } from "../../hooks/useForm";
@@ -48,6 +48,8 @@ function JoinRoom() {
 						mutate({
 							...user,
 							displayName: getValues().memberName,
+							vote: null,
+							voteStatus: "not-voted"
 						});
 					}
 				}}>Join the room</Button>

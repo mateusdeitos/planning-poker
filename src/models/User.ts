@@ -7,6 +7,8 @@ export const User = (user: App.User | FireBaseUser): App.User => {
 		photoURL: user.photoURL,
 		email: user.email,
 		uid: user.uid,
+		vote: null,
+		voteStatus: "not-voted",
 	}
 }
 
