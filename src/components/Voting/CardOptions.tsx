@@ -1,4 +1,4 @@
-import { Flex, useToast } from "@chakra-ui/react";
+import { Flex, useColorModeValue, useToast } from "@chakra-ui/react";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { useRef } from "react";
@@ -17,6 +17,7 @@ export const CardOptions = () => {
 	const memberQuery = useMember(roomId, user.uid);
 	const selected = memberQuery?.data?.vote;
 	const debounceMutationRef = useRef<NodeJS.Timeout | null>(null);
+	const cardBgColor = useColorModeValue("white", "gray.700")
 
 	const voteMutation = useMutation((vote: App.Card["value"]) => axios.post(`/api/vote/${roomId}`, {
 		vote,
@@ -81,13 +82,18 @@ export const CardOptions = () => {
 				const isSelected = card.value === selected;
 				return <VotingCard
 					key={index}
+					role="group"
 					h={100}
 					w={75}
 					selected={isSelected}
 					onClick={() => onSelectCard(card.value)}
+					border="2px solid"
+					borderColor={isSelected ? "green.300" : cardBgColor}
+					bg={cardBgColor}
+					_hover={{ borderColor: "green.300" }}
 					cursor="pointer"
 				>
-					<VotingCard.RevealedBody value={card.label} selected={card.value === selected} />
+					<VotingCard.HoverableBody value={card.label} selected={card.value === selected} />
 				</VotingCard>;
 			})}
 		</Flex>

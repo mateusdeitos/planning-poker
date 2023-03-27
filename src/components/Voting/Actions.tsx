@@ -1,7 +1,7 @@
 import { useAuth } from "../../context/AuthContext";
 import { useRoomDetails } from "../../hooks/useRoomDetails";
 import { useRoomIdFromRouter } from "../../hooks/useRoomIdFromRouter";
-import { Button, Flex, useToast } from "@chakra-ui/react";
+import { Button, ButtonProps, Flex, IconButton, Tooltip, useBreakpointValue, useToast } from "@chakra-ui/react";
 import { IconDice, IconDoorExit, IconLink, IconPlayerPlay } from "@tabler/icons-react";
 import { useMutation } from "@tanstack/react-query";
 import axios, { AxiosError } from "axios";
@@ -46,8 +46,9 @@ export const Actions = () => {
 
 	return <Flex py={4} px={50} w="100%" gap={4} alignItems="center" justifyContent="flex-start">
 		{votingState !== "finished" && (
-			<Button
+			<ResponsiveButton
 				leftIcon={<IconPlayerPlay />}
+				colorScheme="cyan"
 				isLoading={mutation.isLoading || isLoading}
 				onClick={() => invalidate().then(() => {
 					mutation.mutate("revealing", {
@@ -60,30 +61,47 @@ export const Actions = () => {
 				})}
 			>
 				Revelar cartas
-			</Button>
+			</ResponsiveButton>
 		)}
 
 		{votingState === "finished" && (
-			<Button
+			<ResponsiveButton
 				leftIcon={<IconDice />}
 				isLoading={mutation.isLoading}
 				onClick={() => mutation.mutate("voting")}
 			>
 				Nova rodada
-			</Button>
+			</ResponsiveButton>
 		)}
 
-		<Button
+		<ResponsiveButton
 			leftIcon={<IconLink />}
 			onClick={copyToClipboard}
 		>
 			Copiar Link de convite
-		</Button>
-		<Button
+		</ResponsiveButton>
+		<ResponsiveButton
 			leftIcon={<IconDoorExit />}
 			onClick={() => leaveRoom.mutate()}
 		>
 			Sair da sala
-		</Button>
+		</ResponsiveButton>
 	</Flex>;
 };
+
+const ResponsiveButton = ({ children, leftIcon, rightIcon, ...props }: ButtonProps) => {
+	const isMobile = useBreakpointValue({ base: true, md: false, lg: false })
+
+	if (isMobile) {
+		const icon = leftIcon ?? rightIcon;
+		return <Tooltip label={children} hasArrow>
+			<IconButton
+				icon={icon}
+				aria-label={typeof children === "string" ? children : ""}
+				{...props}
+			/>
+		</Tooltip>
+	}
+
+	return <Button leftIcon={leftIcon} rightIcon={rightIcon} {...props}>{children}</Button>
+}
