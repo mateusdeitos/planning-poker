@@ -10,6 +10,7 @@ import { useRoomIdFromRouter } from "../../hooks/useRoomIdFromRouter";
 import { CardOptions } from "../../components/Voting/CardOptions";
 import { RevealingOverlay } from "../../components/Voting/RevealingOverlay";
 import { Actions } from "../../components/Voting/Actions";
+import { Results } from "../../components/Voting/Results";
 
 export const SECONDS_TO_REVEAL = 3;
 
@@ -61,6 +62,7 @@ function VotingPage() {
 			{isError && <p>Error: {error.message}</p>}
 			{!!room?.members && <Members members={room.members} />}
 			{room.votingState !== "finished" && <CardOptions />}
+			{room.votingState === "finished" && <Results />}
 		</Wrapper>
 	);
 }
