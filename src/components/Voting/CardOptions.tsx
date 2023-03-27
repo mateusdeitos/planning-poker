@@ -1,4 +1,4 @@
-import { Flex, useColorModeValue, useToast } from "@chakra-ui/react";
+import { Flex, useColorModeValue, useToast, useUpdateEffect } from "@chakra-ui/react";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { useEffect, useRef, useState } from "react";
@@ -34,13 +34,15 @@ export const CardOptions = () => {
 	const toggle = (value: App.Card["value"]) => {
 		if (selected === value) {
 			setSelected(null);
+			memberQuery.setUnvote();
 			return;
 		}
 
 		setSelected(value);
+		memberQuery.setVote(value);
 	}
 
-	useEffect(() => {
+	useUpdateEffect(() => {
 		clearTimeout(debounceMutationRef.current);
 		debounceMutationRef.current = setTimeout(() => {
 			const onError = () => {
