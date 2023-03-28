@@ -36,7 +36,7 @@ export const Results = () => {
 			}
 		});
 
-		const average = (sum / count);
+		const average = count === 0 ? 0 : (sum / count);
 
 		return {
 			average,
@@ -62,23 +62,23 @@ export const Results = () => {
 			gap="8px"
 			mb={4}
 		>
-			<Stat bg={statBg} p={4} borderRadius={4} w={100}>
+			<Stat bg={statBg} p={4} borderRadius={4} w={100} maxW={100}>
 				<StatLabel>Total</StatLabel>
 				<StatNumber>{results.count.toFixed(2)}</StatNumber>
 			</Stat>
-			<Stat bg={statBg} p={4} borderRadius={4} w={100}>
+			<Stat bg={statBg} p={4} borderRadius={4} w={100} maxW={100}>
 				<StatLabel>Média</StatLabel>
 				<StatNumber>{results.average.toFixed(2)}</StatNumber>
 			</Stat>
 			{!!results.lowest && (
-				<Stat bg={statBg} p={4} borderRadius={4} w={300}>
+				<Stat bg={statBg} p={4} borderRadius={4} w={300} maxW={300}>
 					<StatLabel>Menor</StatLabel>
 					<StatNumber>{results.lowest.vote}</StatNumber>
 					<StatHelpText>{results.lowest.displayName}</StatHelpText>
 				</Stat>
 			)}
 			{!!results.highest && (
-				<Stat bg={statBg} p={4} borderRadius={4} w={300}>
+				<Stat bg={statBg} p={4} borderRadius={4} w={300} maxW={300}>
 					<StatLabel>Maior</StatLabel>
 					<StatNumber>{results.highest.vote}</StatNumber>
 					<StatHelpText>{results.highest.displayName}</StatHelpText>
