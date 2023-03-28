@@ -1,15 +1,16 @@
-import { useQueryClient, useQuery } from "@tanstack/react-query";
-import axios, { AxiosError } from "axios";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { AxiosError } from "axios";
+import { api } from "../services/firebase/api";
+import { App } from "../types";
 import { useRoomDetails } from "./useRoomDetails";
 import { useSubscribeToRef } from "./useSubscribeToRef";
-import { App } from "../types";
 
 
 export const useMember = (roomId: string, memberId: string, onSuccess?: (data: App.User) => void) => {
 	const queryClient = useQueryClient();
 	const queryKey = ["room", roomId, "members", memberId];
 	const query = useQuery<App.User, AxiosError<string>>(queryKey,
-		() => axios.get(`/api/room/${roomId}/members/${memberId}`).then(res => res.data),
+		() => api.get(`/api/room/${roomId}/members/${memberId}`).then(res => res.data),
 		{
 			enabled: !!roomId && !!memberId,
 			refetchOnWindowFocus: false,

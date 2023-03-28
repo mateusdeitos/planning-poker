@@ -1,5 +1,6 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import axios, { AxiosError } from "axios";
+import { AxiosError } from "axios";
+import { api } from "../services/firebase/api";
 import { App } from "../types";
 import { useSubscribeToRef } from "./useSubscribeToRef";
 
@@ -13,7 +14,7 @@ export const useRoomDetails = <S = App.Room>(roomId: string, options?: Options<S
 	const queryClient = useQueryClient();
 	const queryKey = ["room", roomId];
 	const query = useQuery<App.Room, AxiosError<string>, S>(queryKey,
-		() => axios.get(`/api/room/${roomId}`).then(res => res.data),
+		() => api.get(`/api/room/${roomId}`).then(res => res.data),
 		{
 			enabled: !!roomId,
 			retry: false,

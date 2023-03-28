@@ -1,15 +1,15 @@
-import { useAuth } from "../../context/AuthContext";
-import { useRoomDetails } from "../../hooks/useRoomDetails";
-import { useRoomIdFromRouter } from "../../hooks/useRoomIdFromRouter";
 import { Button, ButtonProps, Flex, IconButton, Tooltip, useBreakpointValue, useToast } from "@chakra-ui/react";
 import { IconDice, IconDoorExit, IconLink, IconPlayerPlay } from "@tabler/icons-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import axios, { AxiosError } from "axios";
-import { App } from "../../types";
-import { SECONDS_TO_REVEAL } from "../../constants";
+import { AxiosError } from "axios";
 import router from "next/router";
+import { SECONDS_TO_REVEAL } from "../../constants";
+import { useAuth } from "../../context/AuthContext";
 import { useCopyToClipboard } from "../../hooks/useCopyToClipboard";
-import { useMember } from "../../hooks/useMember";
+import { useRoomDetails } from "../../hooks/useRoomDetails";
+import { useRoomIdFromRouter } from "../../hooks/useRoomIdFromRouter";
+import { api } from "../../services/firebase/api";
+import { App } from "../../types";
 
 export const Actions = () => {
 	const roomId = useRoomIdFromRouter();
@@ -26,12 +26,12 @@ export const Actions = () => {
 	const mutation = useMutation({
 		mutationKey: ["change-state"],
 		mutationFn: async (phase: App.Room["votingState"]) => {
-			return axios.post(`/api/change-state/${roomId}`, { user, phase });
+			return api.post(`/api/change-state/${roomId}`, { user, phase });
 		},
 	});
 
 	const leaveRoom = useMutation({
-		mutationFn: () => axios.post(`/api/leave-room/${roomId}`, { user }),
+		mutationFn: () => api.post(`/api/leave-room/${roomId}`, { user }),
 		onSuccess: () => router.push(`/`),
 		onError: (error: AxiosError<string>) => {
 			toast({

@@ -36,7 +36,7 @@ export const joinRoom = async (roomId: string, member: App.User) => {
 		throw new Error("Room not found");
 	}
 
-	if (!!room.members[member.uid]) {
+	if (!!room?.members?.[member.uid]) {
 		return Promise.resolve();
 	}
 
@@ -95,16 +95,14 @@ export const vote = async (roomId: string, memberId: string, vote: App.Card["val
 		throw new Error("Room not found");
 	}
 
-	if (!room.members[memberId]) {
+	if (!room?.members?.[memberId]) {
 		throw new Error("Member not found");
 	}
 
-	const members = { ...room.members };
-	members[memberId].vote = vote;
-	members[memberId].voteStatus = "voted";
 
 	return updateData({
-		[`rooms/${roomId}/members`]: members,
+		[`rooms/${roomId}/members/${memberId}/vote`]: vote,
+		[`rooms/${roomId}/members/${memberId}/voteStatus`]: "voted",
 	});
 }
 
@@ -114,16 +112,13 @@ export const unVote = async (roomId: string, memberId: string) => {
 		throw new Error("Room not found");
 	}
 
-	if (!room.members[memberId]) {
+	if (!room?.members?.[memberId]) {
 		throw new Error("Member not found");
 	}
 
-	const members = { ...room.members };
-	members[memberId].vote = null;
-	members[memberId].voteStatus = "not-voted";
-
 	return updateData({
-		[`rooms/${roomId}/members`]: members,
+		[`rooms/${roomId}/members/${memberId}/vote`]: null,
+		[`rooms/${roomId}/members/${memberId}/voteStatus`]: "not-voted",
 	});
 }
 

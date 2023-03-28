@@ -1,8 +1,8 @@
-import { NextApiRequest, NextApiResponse } from "next";
 import { isUser } from "../../../models/User";
 import { leaveRoom } from "../../../services/firebase/room-services";
+import { withAuth } from "../../../withAuth";
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default withAuth(async (req, res) => {
 	if (req.method !== "POST") {
 		return res.status(405).end();
 	}
@@ -18,6 +18,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 		return res.status(400).send("Missing roomId or memberName");
 	}
 
+	if (req.uid != user.uid) {
+		return res.status(401).send("Not authorized");
+	}
+
 	try {
 		await leaveRoom(Array.isArray(roomId) ? roomId[0] : roomId, user.uid);
 
@@ -26,4 +30,4 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 		return res.status(500).send(e.message);
 	}
 
-}
+});

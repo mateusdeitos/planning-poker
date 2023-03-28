@@ -1,12 +1,13 @@
 import { Button, Flex, FormControl, FormErrorMessage, FormLabel, Input, Text, useToast, VStack } from "@chakra-ui/react";
-import axios, { AxiosError } from "axios";
-import { useRouter } from "next/router";
 import { useMutation } from "@tanstack/react-query";
+import { AxiosError } from "axios";
+import { useRouter } from "next/router";
+import { useForm } from "react-hook-form";
 import PrivatePage from "../../components/PrivatePage";
 import { useAuth } from "../../context/AuthContext";
-import { useForm } from "react-hook-form";
-import { App } from "../../types";
 import { useRoomDetails } from "../../hooks/useRoomDetails";
+import { api } from "../../services/firebase/api";
+import { App } from "../../types";
 
 function JoinRoom() {
 	const { user } = useAuth();
@@ -23,7 +24,7 @@ function JoinRoom() {
 	});
 
 	const { mutate, status } = useMutation({
-		mutationFn: (user: App.User) => axios.post(`/api/join-room/${roomId}`, { user }),
+		mutationFn: (user: App.User) => api.post(`/api/join-room/${roomId}`, { user }),
 		onSuccess: () => router.push(`/voting/${roomId}`),
 		onError: (error: AxiosError<string>) => {
 			toast({
