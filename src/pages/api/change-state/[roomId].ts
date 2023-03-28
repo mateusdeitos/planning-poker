@@ -2,8 +2,9 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { isUser } from "../../../models/User";
 import { changeState } from "../../../services/firebase/room-services";
 import { App } from "../../../types";
+import { withAuth } from "../../../withAuth";
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default withAuth(async (req, res) => {
 	if (req.method !== "POST") {
 		return res.status(405).end();
 	}
@@ -33,4 +34,4 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 		return res.status(500).send(e.message);
 	}
 
-}
+});

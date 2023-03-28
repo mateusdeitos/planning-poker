@@ -1,8 +1,8 @@
-import { NextApiRequest, NextApiResponse } from "next";
 import { getData } from "../../../../../services/firebase";
 import { App } from "../../../../../types";
+import { withAuth } from "../../../../../withAuth";
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default withAuth(async (req, res) => {
 	if (req.method !== "GET") {
 		return res.status(405).end();
 	}
@@ -11,6 +11,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
 	if (!roomId) {
 		return res.status(400).send("Missing roomId");
+	}
+
+	if (!memberId) {
+		return res.status(400).send("Missing memberId");
+	}
+
+	if (req.uid != memberId) {
+		return res.status(401).send("Not authorized");
 	}
 
 	roomId = Array.isArray(roomId) ? roomId[0] : roomId;
@@ -23,4 +31,4 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 		return res.status(500).send(e.message);
 	}
 
-}
+});

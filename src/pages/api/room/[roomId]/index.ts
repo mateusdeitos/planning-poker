@@ -1,7 +1,7 @@
-import { NextApiRequest, NextApiResponse } from "next";
 import { getRoomDetails } from "../../../../services/firebase/room-services";
+import { withAuth } from "../../../../withAuth";
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default withAuth(async (req, res) => {
 	if (req.method !== "GET") {
 		return res.status(405).end();
 	}
@@ -22,4 +22,4 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 		return res.status(500).send(e.message);
 	}
 
-}
+});

@@ -1,6 +1,6 @@
 import { Button, Flex, FormControl, FormLabel, Input, VStack, useToast, FormErrorMessage } from "@chakra-ui/react";
 import { useMutation } from "@tanstack/react-query";
-import axios, { AxiosError } from "axios";
+import { AxiosError } from "axios";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { Header } from "../components/Header";
@@ -8,6 +8,7 @@ import PrivatePage from "../components/PrivatePage";
 import { Wrapper } from "../components/Wrapper";
 import { useAuth } from "../context/AuthContext";
 import { useForm } from "react-hook-form"
+import { api } from "../services/firebase/api";
 
 type Form = {
 	roomName: string;
@@ -28,7 +29,7 @@ function Home() {
 	const router = useRouter();
 
 	const createRoom = useMutation({
-		mutationFn: (form: Form) => axios.post<{ roomId: string }>("/api/create-room", {
+		mutationFn: (form: Form) => api.post<{ roomId: string }>("/api/create-room", {
 			roomName: form.roomName,
 			user: {
 				...user,

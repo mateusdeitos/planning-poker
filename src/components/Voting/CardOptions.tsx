@@ -1,13 +1,13 @@
 import { Flex, useColorModeValue, useToast, useUpdateEffect } from "@chakra-ui/react";
 import { useMutation } from "@tanstack/react-query";
-import axios from "axios";
-import { useEffect, useRef, useState } from "react";
-import { VotingCard } from "../VotingCard";
+import { useRef, useState } from "react";
 import { useAuth } from "../../context/AuthContext";
+import { useMember } from "../../hooks/useMember";
 import { useRoomDetails } from "../../hooks/useRoomDetails";
 import { useRoomIdFromRouter } from "../../hooks/useRoomIdFromRouter";
+import { api } from "../../services/firebase/api";
 import { App } from "../../types";
-import { useMember } from "../../hooks/useMember";
+import { VotingCard } from "../VotingCard";
 
 export const CardOptions = () => {
 	const { user } = useAuth();
@@ -22,12 +22,12 @@ export const CardOptions = () => {
 	const debounceMutationRef = useRef<NodeJS.Timeout | null>(null);
 	const cardBgColor = useColorModeValue("white", "gray.700")
 
-	const voteMutation = useMutation((vote: App.Card["value"]) => axios.post(`/api/vote/${roomId}`, {
+	const voteMutation = useMutation((vote: App.Card["value"]) => api.post(`/api/vote/${roomId}`, {
 		vote,
 		user
 	}));
 
-	const unVoteMutation = useMutation(() => axios.post(`/api/un-vote/${roomId}`, {
+	const unVoteMutation = useMutation(() => api.post(`/api/un-vote/${roomId}`, {
 		user
 	}));
 

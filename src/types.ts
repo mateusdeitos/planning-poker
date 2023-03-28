@@ -1,4 +1,5 @@
 import { User as FireBaseUser } from "firebase/auth"
+import { NextApiRequest, NextApiResponse } from "next";
 export declare module App {
 
 	type User = Pick<FireBaseUser, "displayName" | "photoURL" | "email" | "uid"> & {
@@ -19,5 +20,11 @@ export declare module App {
 		cards: App.Card[],
 		votingState: "voting" | "revealing" | "finished",
 	}
+
+	interface RouteRequest extends NextApiRequest {
+		uid: string;
+	}
+
+	type RouteHandler = (req: RouteRequest, res: NextApiResponse) => Promise<any>;
 
 }

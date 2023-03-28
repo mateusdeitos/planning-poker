@@ -4,7 +4,17 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
 import Head from "next/head"
 import { AuthProvider } from "../context/AuthContext";
 
-const client = new QueryClient();
+const client = new QueryClient({
+	defaultOptions: {
+		mutations: {
+			retry: false,
+		},
+		queries: {
+			cacheTime: 0,
+			retry: false,
+		}
+	}
+});
 
 function MyApp({ Component, pageProps }) {
 	return <>
