@@ -3,22 +3,25 @@ import { useRoomDetails } from "../../hooks/useRoomDetails";
 import { useRoomIdFromRouter } from "../../hooks/useRoomIdFromRouter";
 import { Button, ButtonProps, Flex, IconButton, Tooltip, useBreakpointValue, useToast } from "@chakra-ui/react";
 import { IconDice, IconDoorExit, IconLink, IconPlayerPlay } from "@tabler/icons-react";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios, { AxiosError } from "axios";
 import { App } from "../../types";
 import { SECONDS_TO_REVEAL } from "../../constants";
 import router from "next/router";
 import { useCopyToClipboard } from "../../hooks/useCopyToClipboard";
+import { useMember } from "../../hooks/useMember";
 
 export const Actions = () => {
 	const roomId = useRoomIdFromRouter();
 	const { user } = useAuth();
 	const toast = useToast();
-	const { data: votingState, invalidate, isLoading } = useRoomDetails(roomId, {
+	const { data: votingState, isLoading } = useRoomDetails(roomId, {
 		select(room) {
 			return room.votingState;
 		},
 	});
+
+	const queryClient = useQueryClient();
 
 	const mutation = useMutation({
 		mutationKey: ["change-state"],
@@ -50,7 +53,7 @@ export const Actions = () => {
 				leftIcon={<IconPlayerPlay />}
 				colorScheme="cyan"
 				isLoading={mutation.isLoading || isLoading}
-				onClick={() => invalidate().then(() => {
+				onClick={() => queryClient.invalidateQueries().then(() => {
 					mutation.mutate("revealing", {
 						onSuccess: () => {
 							setTimeout(() => {
