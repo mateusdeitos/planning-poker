@@ -14,6 +14,7 @@ export const useMember = (roomId: string, memberId: string, onSuccess?: (data: A
 			enabled: !!roomId && !!memberId,
 			refetchOnWindowFocus: false,
 			staleTime: Infinity,
+			cacheTime: 0,
 			onSuccess(data) {
 				if (onSuccess) {
 					onSuccess(data);
