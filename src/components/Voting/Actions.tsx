@@ -47,7 +47,14 @@ export const Actions = () => {
 		"URL copiada para a área de transferência"
 	);
 
-	return <Flex py={4} px={50} w="100%" gap={4} alignItems="center" justifyContent="flex-start">
+	return <Flex
+		py={4}
+		w="100%"
+		gap={4}
+		alignItems="center"
+		justifyContent="flex-start"
+		px={{ base: "10px", md: "50px" }}
+	>
 		{votingState !== "finished" && (
 			<ResponsiveButton
 				leftIcon={<IconPlayerPlay />}

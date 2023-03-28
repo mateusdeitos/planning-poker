@@ -1,6 +1,5 @@
 import { Flex, Heading, HStack, IconButton, Link, Tooltip, useColorMode, useColorModeValue, VStack } from "@chakra-ui/react";
 import { IconLogout, IconMoonStars, IconSunHigh } from "@tabler/icons-react";
-import { useRouter } from "next/router";
 import { useAuth } from "../context/AuthContext";
 
 export const Header = ({ subTitle = <></> }) => {
@@ -17,7 +16,7 @@ export const Header = ({ subTitle = <></> }) => {
 		alignItems="center"
 		justifyContent="space-between"
 		bg={headerBg}
-		px="50px"
+		px={{ base: "10px", md: "50px" }}
 	>
 		<VStack alignItems="flex-start" spacing="sm">
 			<Heading size="md">

@@ -12,7 +12,8 @@ export const Members = ({ members }: MembersProps) => {
 		flex={1}
 		gap={30}
 		wrap="wrap"
-		p={50}
+		py={50}
+		px={{ base: "10px", md: "50px" }}
 		overflowY="auto"
 	>
 		{Object.values(members).map((member, index) => <MemberCard key={index} member={member} />)}

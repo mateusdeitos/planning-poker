@@ -74,7 +74,7 @@ export const CardOptions = () => {
 			wrap="nowrap"
 			overflowX="auto"
 			w="100%"
-			px={50}
+			px={{ base: "10px", md: "50px" }}
 			py={10}
 			justifyContent="flex-start"
 			gap="8px"
