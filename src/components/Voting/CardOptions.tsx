@@ -42,7 +42,7 @@ export const CardOptions = () => {
 		memberQuery.setVote(value);
 	}
 
-	useEffect(() => () => setSelected(null));
+	useEffect(() => () => setSelected(null), []);
 
 	useUpdateEffect(() => {
 		clearTimeout(debounceMutationRef.current);
