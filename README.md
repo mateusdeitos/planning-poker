@@ -1,3 +1,7 @@
+# Host
+
+https://planning-poker.mateusdeitos.dev/
+
 # Intro
 
 This is an Planning Poker app that aims to help estimate story points of tasks during the sprint planning (scrum ceremony)
