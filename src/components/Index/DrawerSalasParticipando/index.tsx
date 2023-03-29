@@ -7,7 +7,7 @@ export const DrawerSalasParticipando = ({ asMember, asAuthor, ...props }: TDrawe
 	return <DrawerContainer {...props} size="lg" >
 		<DrawerContent>
 			<DrawerCloseButton />
-			<DrawerHeader>Salas sou membro</DrawerHeader>
+			<DrawerHeader>Salas que sou membro</DrawerHeader>
 			<DrawerBody>
 				{Object.entries(asMember).map(([key, room]) => {
 					return <RoomCard
