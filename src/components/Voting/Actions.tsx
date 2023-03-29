@@ -1,5 +1,5 @@
 import { Button, ButtonProps, Flex, IconButton, Tooltip, useBreakpointValue, useToast } from "@chakra-ui/react";
-import { IconDice, IconDoorExit, IconLink, IconPlayerPlay } from "@tabler/icons-react";
+import { IconDice, IconDoorExit, IconLink, IconPlayerPlay, IconUser } from "@tabler/icons-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import router from "next/router";
@@ -8,8 +8,10 @@ import { useAuth } from "../../context/AuthContext";
 import { useCopyToClipboard } from "../../hooks/useCopyToClipboard";
 import { useRoomDetails } from "../../hooks/useRoomDetails";
 import { useRoomIdFromRouter } from "../../hooks/useRoomIdFromRouter";
+import { renderDrawer } from "../../renderDrawer";
 import { api } from "../../services/firebase/api";
 import { App } from "../../types";
+import { ChangeNameDrawer } from "./ChangeNameDrawer";
 
 export const Actions = () => {
 	const roomId = useRoomIdFromRouter();
@@ -97,8 +99,61 @@ export const Actions = () => {
 		>
 			Sair da sala
 		</ResponsiveButton>
+		<ChangeNameButton />
 	</Flex>;
 };
+
+const ChangeNameButton = () => {
+	const { user } = useAuth();
+	const toast = useToast();
+	const roomId = useRoomIdFromRouter();
+	const { data: member, updateMember } = useRoomDetails(roomId, {
+		select(room) {
+			return room.members[user.uid];
+		},
+	});
+
+	const { mutate } = useMutation({
+		mutationFn: (name: string) => api.post(`/api/room/${roomId}/members/${user.uid}/change-name`, { name }),
+		onSuccess: () => toast({
+			status: "success",
+			description: "Nome alterado com sucesso",
+		}),
+		onError: (error: AxiosError<string>) => toast({
+			status: "error",
+			title: "Ocorreu um erro",
+			description: error?.response?.data,
+		}),
+	})
+
+	const handleClick = async () => {
+		const displayName = await renderDrawer<string>(props => (
+			<ChangeNameDrawer
+				{...props}
+				placement="bottom"
+				currentName={member?.displayName}
+			/>
+		));
+
+		if (displayName === member?.displayName) {
+			return;
+		}
+
+		mutate(displayName, {
+			onSuccess: () => {
+				updateMember({ ...member, displayName });
+			}
+		})
+	}
+
+	return <ResponsiveButton
+		leftIcon={<IconUser />}
+		onClick={() => handleClick()}
+	>
+		Mudar meu nome
+	</ResponsiveButton>
+
+}
 
 const ResponsiveButton = ({ children, leftIcon, rightIcon, ...props }: ButtonProps) => {
 	const isMobile = useBreakpointValue({ base: true, md: false, lg: false })
@@ -116,3 +171,6 @@ const ResponsiveButton = ({ children, leftIcon, rightIcon, ...props }: ButtonPro
 
 	return <Button leftIcon={leftIcon} rightIcon={rightIcon} {...props}>{children}</Button>
 }
+
+
+

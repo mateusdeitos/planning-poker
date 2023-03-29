@@ -37,7 +37,7 @@ export const useRoomDetails = <S = App.Room>(roomId: string, options?: Options<S
 			return {
 				...oldRoom,
 				...room,
-				members: Object.values(oldRoom.members).reduce((acc, member) => {
+				members: Object.values(oldRoom?.members ?? {}).reduce((acc, member) => {
 					// Não atualiza o user atual, porque ele é atualizado via 'updateMember' quando alguma mutation que altere o member seja executada
 					if (member.uid === user?.uid) {
 						acc[member.uid] = member;

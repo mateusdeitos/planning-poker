@@ -1,6 +1,6 @@
-import { getData } from "../../../../../services/firebase";
-import { App } from "../../../../../types";
-import { withAuth } from "../../../../../withAuth";
+import { getData } from "../../../../../../services/firebase";
+import { App } from "../../../../../../types";
+import { withAuth } from "../../../../../../withAuth";
 
 export default withAuth(async (req, res) => {
 	if (req.method !== "GET") {

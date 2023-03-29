@@ -89,6 +89,21 @@ export const changeState = async (roomId: string, phase: App.Room["votingState"]
 	});
 }
 
+export const changeMemberName = async (roomId: string, memberId: string, name: string) => {
+	const room = await getRoomDetails(roomId);
+	if (!room) {
+		throw new Error("Room not found");
+	}
+
+	if (!room?.members?.[memberId]) {
+		throw new Error("Member not found");
+	}
+
+	return updateData({
+		[`rooms/${roomId}/members/${memberId}/displayName`]: name,
+	});
+}
+
 export const vote = async (roomId: string, memberId: string, vote: App.Card["value"]) => {
 	const room = await getRoomDetails(roomId);
 	if (!room) {
