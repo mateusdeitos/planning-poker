@@ -18,7 +18,7 @@ export const CardOptions = () => {
 		setSelected(data.vote);
 	});
 
-	const [selected, setSelected] = useState<App.User["vote"]>(memberQuery?.data?.vote);
+	const [selected, setSelected] = useState<App.User["vote"] | null | undefined>(memberQuery?.data?.vote);
 	const debounceMutationRef = useRef<NodeJS.Timeout | null>(null);
 	const cardBgColor = useColorModeValue("white", "gray.700")
 
@@ -53,6 +53,8 @@ export const CardOptions = () => {
 
 				memberQuery.invalidate();
 			};
+
+			if (selected === undefined) return;
 
 			if (selected === null) {
 				unVoteMutation.mutate(null, { onError });

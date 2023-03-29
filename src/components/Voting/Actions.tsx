@@ -5,6 +5,7 @@ import { AxiosError } from "axios";
 import router from "next/router";
 import { SECONDS_TO_REVEAL } from "../../constants";
 import { useAuth } from "../../context/AuthContext";
+import { useUi } from "../../context/UiContext";
 import { useCopyToClipboard } from "../../hooks/useCopyToClipboard";
 import { useRoomDetails } from "../../hooks/useRoomDetails";
 import { useRoomIdFromRouter } from "../../hooks/useRoomIdFromRouter";
@@ -14,6 +15,7 @@ import { App } from "../../types";
 import { ChangeNameDrawer } from "./ChangeNameDrawer";
 
 export const Actions = () => {
+	const [, dispatch] = useUi();
 	const roomId = useRoomIdFromRouter();
 	const { user } = useAuth();
 	const toast = useToast();
@@ -81,7 +83,15 @@ export const Actions = () => {
 				colorScheme="blue"
 				leftIcon={<IconDice />}
 				isLoading={mutation.isLoading}
-				onClick={() => mutation.mutate("voting")}
+				onClick={() => {
+					dispatch({ type: "loader", payload: true });
+					mutation.mutate("voting", {
+						onSuccess: () => {
+							queryClient.invalidateQueries(["room", roomId]);
+						},
+						onSettled: () => dispatch({ type: "loader", payload: false })
+					})
+				}}
 			>
 				Nova rodada
 			</ResponsiveButton>
