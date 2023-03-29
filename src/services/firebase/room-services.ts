@@ -1,4 +1,4 @@
-import { getData, pushData, updateData } from '.'
+import { getData, pushData, updateData } from '.';
 import { User } from '../../models/User';
 import { App } from '../../types';
 
@@ -28,6 +28,27 @@ export const createRoom = async (roomName: string, user: App.User) => {
 	}
 
 	return pushData("rooms", room);
+}
+
+export const listRoomsByUserUid = async (userUid: App.User["uid"]): Promise<App.ListRoomsResponse> => {
+	const rooms = await getData<Record<string, App.Room>>("rooms");
+
+	const results: App.ListRoomsResponse = {
+		asAuthor: {},
+		asMember: {},
+	}
+
+	for (const [roomId, room] of Object.entries(rooms)) {
+		if (room?.author?.uid === userUid) {
+			results.asAuthor[roomId] = room;
+		}
+
+		if (!!room?.members?.[userUid]) {
+			results.asMember[roomId] = room;
+		}
+	}
+
+	return results;
 }
 
 export const joinRoom = async (roomId: string, member: App.User) => {

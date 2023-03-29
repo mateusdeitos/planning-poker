@@ -17,7 +17,7 @@ export const useDrawerContext = <T extends unknown = never>() => {
 	return context
 }
 
-export const DrawerContainer = ({ children, ...props }: PropsWithChildren<TDrawerComponent<any>>) => {
+export const DrawerContainer = ({ children, ...props }: PropsWithChildren<TDrawerComponent<unknown>>) => {
 	return <Drawer {...props}>
 		<DrawerOverlay />
 		{children}

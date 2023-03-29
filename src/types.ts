@@ -21,6 +21,11 @@ export declare module App {
 		votingState: "voting" | "revealing" | "finished",
 	}
 
+	type ListRoomsResponse = {
+		asAuthor: Record<string, Room>
+		asMember: Record<string, Room>
+	};
+
 	interface RouteRequest extends NextApiRequest {
 		uid: string;
 	}

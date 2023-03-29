@@ -1,14 +1,18 @@
-import { Button, Flex, FormControl, FormLabel, Input, VStack, useToast, FormErrorMessage } from "@chakra-ui/react";
-import { useMutation } from "@tanstack/react-query";
+import { Button, Flex, FormControl, FormErrorMessage, FormLabel, Input, useToast, VStack } from "@chakra-ui/react";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { useRouter } from "next/router";
 import { useState } from "react";
+import { useForm } from "react-hook-form";
 import { Header } from "../components/Header";
+import { DrawerSalasParticipando } from "../components/Index/DrawerSalasParticipando";
 import PrivatePage from "../components/PrivatePage";
 import { Wrapper } from "../components/Wrapper";
+import { useUi } from "../context/UiContext";
 import { useAuth } from "../context/AuthContext";
-import { useForm } from "react-hook-form"
+import { renderDrawer } from "../renderDrawer";
 import { api } from "../services/firebase/api";
+import { App } from "../types";
 
 type Form = {
 	roomName: string;
@@ -19,12 +23,14 @@ function Home() {
 	const toast = useToast();
 	const { user } = useAuth();
 	const [lockButton, setLockButton] = useState(false);
+	const queryRoomsByUserUid = useQuery(["rooms", user.uid], () => api.get<App.ListRoomsResponse>("/api/list-rooms-by-user-uid").then(r => r.data));
 	const { register, handleSubmit, formState } = useForm<Form>({
 		defaultValues: {
 			roomName: "",
 			authorName: user.displayName?.split(" ")[0] || ""
 		}
 	});
+	const [, dispatch] = useUi();
 
 	const router = useRouter();
 
@@ -68,6 +74,26 @@ function Home() {
 			}
 		});
 	})
+
+	const handleVerSalas = (data: App.ListRoomsResponse) => {
+		renderDrawer(props => <DrawerSalasParticipando {...props} {...data} />)
+			.then(roomId => {
+				const toastId = toast({
+					variant: "solid",
+					status: "loading",
+					colorScheme: "blue",
+					title: "Redirecionando...",
+				});
+
+				dispatch({ type: "loader", payload: true });
+				setTimeout(() => {
+					router.push(`/voting/${roomId}`).then(() => {
+						dispatch({ type: "loader", payload: false });
+						toast.close(toastId);
+					});
+				}, 300)
+			})
+	}
 
 	return <Wrapper>
 		<Header />
@@ -114,6 +140,16 @@ function Home() {
 					onClick={handleCriarSala}
 				>
 					Criar sala
+				</Button>
+				<Button
+					w="100%"
+					isLoading={queryRoomsByUserUid.isLoading}
+					isDisabled={queryRoomsByUserUid.isError}
+					colorScheme="blue"
+					variant="solid"
+					onClick={() => handleVerSalas(queryRoomsByUserUid.data)}
+				>
+					Ver salas que estou participando
 				</Button>
 			</VStack>
 		</Flex>
