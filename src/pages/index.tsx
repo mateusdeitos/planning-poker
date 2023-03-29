@@ -144,7 +144,7 @@ function Home() {
 				<Button
 					w="100%"
 					isLoading={queryRoomsByUserUid.isLoading}
-					isDisabled={queryRoomsByUserUid.isError}
+					isDisabled={queryRoomsByUserUid.isError || Object.keys(queryRoomsByUserUid?.data?.asMember ?? {}).length === 0}
 					colorScheme="blue"
 					variant="solid"
 					onClick={() => handleVerSalas(queryRoomsByUserUid.data)}
