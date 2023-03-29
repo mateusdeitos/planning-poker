@@ -1,5 +1,6 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
+import { useAuth } from "../context/AuthContext";
 import { api } from "../services/firebase/api";
 import { App } from "../types";
 import { useSubscribeToRef } from "./useSubscribeToRef";
@@ -11,6 +12,7 @@ type Options<S = any> = {
 }
 
 export const useRoomDetails = <S = App.Room>(roomId: string, options?: Options<S>) => {
+	const { user } = useAuth();
 	const queryClient = useQueryClient();
 	const queryKey = ["room", roomId];
 	const query = useQuery<App.Room, AxiosError<string>, S>(queryKey,
@@ -31,7 +33,21 @@ export const useRoomDetails = <S = App.Room>(roomId: string, options?: Options<S
 			return;
 		}
 
-		queryClient.setQueryData<App.Room>(queryKey, room);
+		queryClient.setQueryData<App.Room>(queryKey, oldRoom => {
+			return {
+				...oldRoom,
+				...room,
+				members: Object.values(oldRoom.members).reduce((acc, member) => {
+					// Não atualiza o user atual, porque ele é atualizado via 'updateMember' quando alguma mutation que altere o member seja executada
+					if (member.uid === user?.uid) {
+						acc[member.uid] = member;
+						return acc;
+					}
+
+					return acc;
+				}, room.members),
+			}
+		});
 	});
 
 	const invalidate = () => queryClient.invalidateQueries(queryKey);
