@@ -34,6 +34,10 @@ export const useRoomDetails = <S = App.Room>(roomId: string, options?: Options<S
 		}
 
 		queryClient.setQueryData<App.Room>(queryKey, oldRoom => {
+			if (oldRoom.votingState != room.votingState) {
+				return room;
+			}
+
 			return {
 				...oldRoom,
 				...room,
@@ -45,7 +49,7 @@ export const useRoomDetails = <S = App.Room>(roomId: string, options?: Options<S
 					}
 
 					return acc;
-				}, room.members),
+				}, room?.members ?? {}),
 			}
 		});
 	});
