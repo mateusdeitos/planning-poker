@@ -64,7 +64,7 @@ const HoverableBody = ({ value, selected = false }: RevealedBodyProps) => {
 		}}
 		borderRadius="md"
 	>
-		<Heading as="h3" size="sm">
+		<Heading as="h3" size="sm" userSelect="none">
 			{value}
 		</Heading>
 	</CardBody>
