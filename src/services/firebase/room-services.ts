@@ -1,4 +1,4 @@
-import { getData, pushData, updateData } from '.';
+import { getData, pushData, remove, updateData } from '../../../lib/firebase-admin';
 import { User } from '../../models/User';
 import { App } from '../../types';
 
@@ -24,19 +24,36 @@ export const createRoom = async (roomName: string, user: App.User) => {
 			{ label: "40", value: 40 },
 			{ label: "100", value: 100 },
 		],
-		votingState: "voting"
+		votingState: "voting",
+		createdAt: Date.now(),
+		lastInteraction: Date.now(),
 	}
 
-	return pushData("rooms", room);
+	const roomRef = await pushData("rooms", room);
+
+	await updateUserRooms(roomRef.key, author.uid, "enter");
+
+	return roomRef
 }
 
 export const listRoomsByUserUid = async (userUid: App.User["uid"]): Promise<App.ListRoomsResponse> => {
-	const rooms = await getData<Record<string, App.Room>>("rooms");
-
+	const roomIds = await getData<string[] | null>(`userRooms/${userUid}/roomIds`);
 	const results: App.ListRoomsResponse = {
 		asAuthor: {},
 		asMember: {},
 	}
+
+	if (!roomIds?.length) {
+		return results;
+	}
+
+	const rooms: Record<string, App.Room> = {};
+	await Promise.all(roomIds.map(roomId => {
+		return getData<App.Room>(`rooms/${roomId}`)
+			.then(room => {
+				rooms[roomId] = room;
+			})
+	}));
 
 	for (const [roomId, room] of Object.entries(rooms)) {
 		if (room?.author?.uid === userUid) {
@@ -66,9 +83,10 @@ export const joinRoom = async (roomId: string, member: App.User) => {
 		[member.uid]: User(member)
 	};
 
-	return updateData({
-		[`rooms/${roomId}/members`]: members,
-	});
+	return Promise.all([
+		updateData(`rooms/${roomId}/members`, members),
+		updateUserRooms(roomId, member.uid, "enter")
+	]);
 }
 
 export const leaveRoom = async (roomId: string, memberId: string) => {
@@ -80,9 +98,17 @@ export const leaveRoom = async (roomId: string, memberId: string) => {
 	const members = { ...room.members };
 	delete members[memberId];
 
-	return updateData({
-		[`rooms/${roomId}/members`]: members,
-	});
+	const promises = [
+		updateUserRooms(roomId, memberId, "leave")
+	];
+
+	if (!Object.keys(members).length) {
+		promises.push(remove(`rooms/${roomId}`));
+	} else {
+		promises.push(updateData(`rooms/${roomId}/members`, members));
+	}
+
+	return Promise.all(promises);
 }
 
 export const changeState = async (roomId: string, phase: App.Room["votingState"]) => {
@@ -105,9 +131,7 @@ export const changeState = async (roomId: string, phase: App.Room["votingState"]
 		})
 	}
 
-	return updateData({
-		[`rooms/${roomId}`]: updatedRoom,
-	});
+	return updateData(`rooms/${roomId}`, updatedRoom);
 }
 
 export const changeMemberName = async (roomId: string, memberId: string, name: string) => {
@@ -120,8 +144,9 @@ export const changeMemberName = async (roomId: string, memberId: string, name: s
 		throw new Error("Member not found");
 	}
 
-	return updateData({
-		[`rooms/${roomId}/members/${memberId}/displayName`]: name,
+	return updateData(`rooms/${roomId}/members/${memberId}`, {
+		...room.members[memberId],
+		displayName: name
 	});
 }
 
@@ -135,10 +160,10 @@ export const vote = async (roomId: string, memberId: string, vote: App.Card["val
 		throw new Error("Member not found");
 	}
 
-
-	return updateData({
-		[`rooms/${roomId}/members/${memberId}/vote`]: vote,
-		[`rooms/${roomId}/members/${memberId}/voteStatus`]: "voted",
+	return updateData(`rooms/${roomId}/members/${memberId}`, {
+		...room.members[memberId],
+		vote,
+		voteStatus: "voted"
 	});
 }
 
@@ -151,14 +176,28 @@ export const unVote = async (roomId: string, memberId: string) => {
 	if (!room?.members?.[memberId]) {
 		throw new Error("Member not found");
 	}
-
-	return updateData({
-		[`rooms/${roomId}/members/${memberId}/vote`]: null,
-		[`rooms/${roomId}/members/${memberId}/voteStatus`]: "not-voted",
+	return updateData(`rooms/${roomId}/members/${memberId}`, {
+		...room.members[memberId],
+		vote: null,
+		voteStatus: "not-voted"
 	});
 }
 
 export const getRoomDetails = async (roomId: string) => {
 	return getData<App.Room | null>(`rooms/${roomId}`);
+}
+
+const updateUserRooms = async (
+	roomId: string,
+	userUid: string,
+	action: "enter" | "leave"
+) => {
+	const userRooms = await getData<App.UserRooms>("userRooms");
+	const roomIds = (userRooms?.[userUid]?.roomIds || []).filter(id => id != roomId);
+	if (action === "enter") {
+		roomIds.push(roomId);
+	}
+
+	await updateData(`userRooms/${userUid}`, { roomIds });
 }
 

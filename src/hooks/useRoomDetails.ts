@@ -34,7 +34,9 @@ export const useRoomDetails = <S = App.Room>(roomId: string, options?: Options<S
 		}
 
 		queryClient.setQueryData<App.Room>(queryKey, oldRoom => {
-			if (oldRoom.votingState != room.votingState) {
+			if (!room) return oldRoom;
+
+			if (oldRoom?.votingState != room.votingState) {
 				return room;
 			}
 

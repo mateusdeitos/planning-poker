@@ -1,4 +1,4 @@
-import { getData } from "../../../../../../services/firebase";
+import { getData } from "../../../../../../../lib/firebase-admin";
 import { App } from "../../../../../../types";
 import { withAuth } from "../../../../../../withAuth";
 

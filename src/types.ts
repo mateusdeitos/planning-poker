@@ -5,6 +5,7 @@ export declare module App {
 	type User = Pick<FireBaseUser, "displayName" | "photoURL" | "email" | "uid"> & {
 		vote: Card["value"];
 		voteStatus: "voted" | "not-voted";
+		role: "admin" | "member";
 	}
 
 	type Card = {
@@ -19,6 +20,14 @@ export declare module App {
 		roomName: string;
 		cards: App.Card[],
 		votingState: "voting" | "revealing" | "finished",
+		createdAt: number,
+		lastInteraction: number,
+	}
+
+	type UserRooms = {
+		[userUid: string]: {
+			roomIds: string[]
+		}
 	}
 
 	type ListRoomsResponse = {
