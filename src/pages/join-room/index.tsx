@@ -8,6 +8,7 @@ import { useAuth } from "../../context/AuthContext";
 import { useRoomDetails } from "../../hooks/useRoomDetails";
 import { api } from "../../services/firebase/api";
 import { App } from "../../types";
+import { User as FireBaseUser } from "firebase/auth"
 
 function JoinRoom() {
 	const { user } = useAuth();
@@ -24,7 +25,7 @@ function JoinRoom() {
 	});
 
 	const { mutate, status } = useMutation({
-		mutationFn: (user: App.User) => api.post(`/api/join-room/${roomId}`, { user }),
+		mutationFn: (user: FireBaseUser) => api.post(`/api/join-room/${roomId}`, { user }),
 		onSuccess: () => router.push(`/voting/${roomId}`),
 		onError: (error: AxiosError<string>) => {
 			toast({
@@ -73,8 +74,6 @@ function JoinRoom() {
 					mutate({
 						...user,
 						displayName: values.memberName,
-						vote: null,
-						voteStatus: "not-voted"
 					});
 				})}>Join the room</Button>
 			</VStack >
