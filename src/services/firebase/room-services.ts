@@ -3,7 +3,7 @@ import { User } from '../../models/User';
 import { App } from '../../types';
 
 export const createRoom = async (roomName: string, user: App.User) => {
-	const author = User(user);
+	const author = User(user, "admin");
 	const room: App.Room = {
 		roomName,
 		author,

@@ -1,7 +1,7 @@
 import { User as FireBaseUser } from "firebase/auth"
 import { App } from "../types"
 
-export const User = (user: App.User | FireBaseUser): App.User => {
+export const User = (user: App.User | FireBaseUser, role: App.User["role"] = "member"): App.User => {
 	return {
 		displayName: user.displayName,
 		photoURL: user.photoURL,
@@ -9,6 +9,7 @@ export const User = (user: App.User | FireBaseUser): App.User => {
 		uid: user.uid,
 		vote: null,
 		voteStatus: "not-voted",
+		role
 	}
 }
 
