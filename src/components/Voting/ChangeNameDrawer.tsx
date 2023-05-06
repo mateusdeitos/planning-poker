@@ -38,6 +38,7 @@ export const ChangeNameDrawer = ({
 							<Input
 								type="text"
 								id="authorName"
+								autoFocus
 								{...register("authorName", {
 									required: {
 										value: true,
