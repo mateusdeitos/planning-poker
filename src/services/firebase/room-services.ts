@@ -151,6 +151,15 @@ export const changeMemberName = async (roomId: string, memberId: string, name: s
 	});
 };
 
+export const changeRoomName = async (roomId: string, roomName: string) => {
+	const room = await getRoomDetails(roomId);
+	if (!room) {
+		throw new Error("Room not found");
+	}
+
+	return updateData(`rooms/${roomId}`, { ...room, roomName });
+};
+
 export const vote = async (roomId: string, memberId: string, vote: App.Card["value"]) => {
 	const room = await getRoomDetails(roomId);
 	if (!room) {

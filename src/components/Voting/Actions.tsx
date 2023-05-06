@@ -7,7 +7,7 @@ import {
 	useBreakpointValue,
 	useToast,
 } from "@chakra-ui/react";
-import { IconDice, IconDoorExit, IconLink, IconPlayerPlay, IconUser } from "@tabler/icons-react";
+import { IconDice, IconDoorExit, IconLink, IconPencil, IconPlayerPlay, IconUser } from "@tabler/icons-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import router from "next/router";
@@ -115,6 +115,7 @@ export const Actions = () => {
 				Sair da sala
 			</ResponsiveButton>
 			<ChangeNameButton />
+			<ChangeRoomNameButton />
 		</Flex>
 	);
 };
@@ -164,6 +165,49 @@ const ChangeNameButton = () => {
 	return (
 		<ResponsiveButton leftIcon={<IconUser />} onClick={() => handleClick()}>
 			Mudar meu nome
+		</ResponsiveButton>
+	);
+};
+
+const ChangeRoomNameButton = () => {
+	const toast = useToast();
+	const roomId = useRoomIdFromRouter();
+	const { data: currentRoomName } = useRoomDetails(roomId, {
+		select(room) {
+			return room.roomName
+		},
+	});
+
+	const { mutate } = useMutation({
+		mutationFn: (name: string) => api.post(`/api/room/${roomId}/change-room-name`, { name }),
+		onSuccess: () =>
+			toast({
+				status: "success",
+				description: "Nome alterado com sucesso",
+			}),
+		onError: (error: AxiosError<string>) =>
+			toast({
+				status: "error",
+				title: "Ocorreu um erro",
+				description: error?.response?.data,
+			}),
+	});
+
+	const handleClick = async () => {
+		const displayName = await renderDrawer<string>((props) => (
+			<ChangeNameDrawer {...props} placement="bottom" currentName={currentRoomName} />
+		));
+
+		if (displayName === currentRoomName) {
+			return;
+		}
+
+		mutate(displayName);
+	};
+
+	return (
+		<ResponsiveButton leftIcon={<IconPencil />} onClick={() => handleClick()}>
+			Mudar nome da sala
 		</ResponsiveButton>
 	);
 };

@@ -99,7 +99,7 @@ export const Results = () => {
 				<Stat bg={statBg} p={4} borderRadius={4} w={300} maxW={300}>
 					<StatLabel>Menor</StatLabel>
 					<StatNumber>{results.lowestVote}</StatNumber>
-					<StatHelpText>
+					<StatHelpText opacity={1}>
 						{results.lowest.map((u, index) => (
 							<UserAvatar key={u.uid} user={u} size="sm" />
 						))}
@@ -110,7 +110,7 @@ export const Results = () => {
 				<Stat bg={statBg} p={4} borderRadius={4} w={300} maxW={300}>
 					<StatLabel>Maior</StatLabel>
 					<StatNumber>{results.highestVote}</StatNumber>
-					<StatHelpText>
+					<StatHelpText opacity={1}>
 						{results.highest.map((u, index) => (
 							<UserAvatar key={u.uid} user={u} size="sm" />
 						))}
