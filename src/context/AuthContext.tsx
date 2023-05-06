@@ -1,8 +1,13 @@
 import React, { createContext, useContext } from "react";
-import { User, GoogleAuthProvider, signInWithPopup, signOut } from 'firebase/auth'
+import {
+	User,
+	GoogleAuthProvider,
+	signInWithPopup,
+	signOut,
+} from "firebase/auth";
 import { auth } from "../services/firebase";
 import { useRouter } from "next/router";
-import { useAuthState } from 'react-firebase-hooks/auth'
+import { useAuthState } from "react-firebase-hooks/auth";
 
 interface AuthProps {
 	user: User | null;

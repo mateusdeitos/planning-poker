@@ -1,4 +1,9 @@
-import { Flex, useColorModeValue, useToast, useUpdateEffect } from "@chakra-ui/react";
+import {
+	Flex,
+	useColorModeValue,
+	useToast,
+	useUpdateEffect,
+} from "@chakra-ui/react";
 import { useMutation } from "@tanstack/react-query";
 import { useRef, useState } from "react";
 import { useAuth } from "../../context/AuthContext";
@@ -14,22 +19,28 @@ export const CardOptions = () => {
 	const toast = useToast();
 	const roomId = useRoomIdFromRouter();
 	const { data: room, isSuccess } = useRoomDetails(roomId);
-	const memberQuery = useMember(roomId, user.uid, data => {
+	const memberQuery = useMember(roomId, user.uid, (data) => {
 		setSelected(data.vote);
 	});
 
-	const [selected, setSelected] = useState<App.User["vote"] | null | undefined>(memberQuery?.data?.vote);
+	const [selected, setSelected] = useState<App.User["vote"] | null | undefined>(
+		memberQuery?.data?.vote
+	);
 	const debounceMutationRef = useRef<NodeJS.Timeout | null>(null);
-	const cardBgColor = useColorModeValue("white", "gray.700")
+	const cardBgColor = useColorModeValue("white", "gray.700");
 
-	const voteMutation = useMutation((vote: App.Card["value"]) => api.post(`/api/vote/${roomId}`, {
-		vote,
-		user
-	}));
+	const voteMutation = useMutation((vote: App.Card["value"]) =>
+		api.post(`/api/vote/${roomId}`, {
+			vote,
+			user,
+		})
+	);
 
-	const unVoteMutation = useMutation(() => api.post(`/api/un-vote/${roomId}`, {
-		user
-	}));
+	const unVoteMutation = useMutation(() =>
+		api.post(`/api/un-vote/${roomId}`, {
+			user,
+		})
+	);
 
 	const toggle = (value: App.Card["value"]) => {
 		if (selected === value) {
@@ -40,7 +51,7 @@ export const CardOptions = () => {
 
 		setSelected(value);
 		memberQuery.setVote(value);
-	}
+	};
 
 	useUpdateEffect(() => {
 		clearTimeout(debounceMutationRef.current);
@@ -64,7 +75,7 @@ export const CardOptions = () => {
 			voteMutation.mutate(selected, { onError });
 		}, 500);
 
-		return () => clearTimeout(debounceMutationRef.current)
+		return () => clearTimeout(debounceMutationRef.current);
 	}, [selected]);
 
 	if (!isSuccess) return null;
@@ -84,21 +95,26 @@ export const CardOptions = () => {
 		>
 			{room?.cards?.map((card, index) => {
 				const isSelected = card.value === selected;
-				return <VotingCard
-					key={index}
-					role="group"
-					h={100}
-					w={75}
-					selected={isSelected}
-					onClick={() => toggle(card.value)}
-					border="2px solid"
-					borderColor={isSelected ? "green.300" : cardBgColor}
-					bg={cardBgColor}
-					_hover={{ borderColor: "green.300" }}
-					cursor="pointer"
-				>
-					<VotingCard.HoverableBody value={card.label} selected={card.value === selected} />
-				</VotingCard>;
+				return (
+					<VotingCard
+						key={index}
+						role="group"
+						h={100}
+						w={75}
+						selected={isSelected}
+						onClick={() => toggle(card.value)}
+						border="2px solid"
+						borderColor={isSelected ? "green.300" : cardBgColor}
+						bg={cardBgColor}
+						_hover={{ borderColor: "green.300" }}
+						cursor="pointer"
+					>
+						<VotingCard.HoverableBody
+							value={card.label}
+							selected={card.value === selected}
+						/>
+					</VotingCard>
+				);
 			})}
 		</Flex>
 	);

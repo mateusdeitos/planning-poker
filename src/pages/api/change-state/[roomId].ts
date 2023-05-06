@@ -16,7 +16,11 @@ export default withAuth(async (req, res) => {
 		return res.status(400).send("Missing user");
 	}
 
-	const validPhases: App.Room["votingState"][] = ["revealing", "finished", "voting"]
+	const validPhases: App.Room["votingState"][] = [
+		"revealing",
+		"finished",
+		"voting",
+	];
 
 	if (!validPhases.includes(phase)) {
 		return res.status(400).send("Invalid phase");
@@ -33,5 +37,4 @@ export default withAuth(async (req, res) => {
 	} catch (e) {
 		return res.status(500).send(e.message);
 	}
-
 });

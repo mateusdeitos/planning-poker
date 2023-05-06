@@ -8,9 +8,9 @@ export const useCopyToClipboard = (text: string, title: string) => {
 				variant: "subtle",
 				status: "success",
 				title,
-			})
+			});
 		});
-	}
+	};
 
 	return copyToClipboard;
-}
+};

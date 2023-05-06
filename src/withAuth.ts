@@ -6,15 +6,15 @@ export function withAuth(handler: App.RouteHandler) {
 	return async (req: App.RouteRequest, res: NextApiResponse) => {
 		const authHeader = req.headers.authorization;
 		if (!authHeader || typeof authHeader !== "string") {
-			return res.status(401).end('Not authenticated. No Auth header');
+			return res.status(401).end("Not authenticated. No Auth header");
 		}
 
-		const token = authHeader.split(' ')[1];
+		const token = authHeader.split(" ")[1];
 		let decodedToken;
 		try {
 			decodedToken = await auth.verifyIdToken(token);
 			if (!decodedToken || !decodedToken.uid) {
-				return res.status(401).end('Not authenticated');
+				return res.status(401).end("Not authenticated");
 			}
 
 			req.uid = decodedToken.uid;
@@ -22,7 +22,7 @@ export function withAuth(handler: App.RouteHandler) {
 			console.log(error.errorInfo);
 			const errorCode = error.errorInfo.code;
 			error.status = 401;
-			if (errorCode === 'auth/internal-error') {
+			if (errorCode === "auth/internal-error") {
 				error.status = 500;
 			}
 

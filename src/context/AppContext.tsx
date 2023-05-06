@@ -11,25 +11,24 @@ const client = new QueryClient({
 		queries: {
 			cacheTime: 0,
 			retry: false,
-		}
-	}
+		},
+	},
 });
 
 const config: ThemeConfig = {
-	initialColorMode: 'dark',
+	initialColorMode: "dark",
 	useSystemColorMode: false,
-}
+};
 
 const theme = extendTheme({ config });
 
-
 export const AppContext = ({ children }) => {
-	return <ChakraProvider resetCSS theme={theme}>
-		<QueryClientProvider client={client}>
-			<UiProvider>
-				{children}
-			</UiProvider>
-			<ReactQueryDevtools />
-		</QueryClientProvider>
-	</ChakraProvider>
-}
+	return (
+		<ChakraProvider resetCSS theme={theme}>
+			<QueryClientProvider client={client}>
+				<UiProvider>{children}</UiProvider>
+				<ReactQueryDevtools />
+			</QueryClientProvider>
+		</ChakraProvider>
+	);
+};

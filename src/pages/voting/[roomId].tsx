@@ -17,7 +17,12 @@ function VotingPage() {
 	const { user, isLoading: isLoadingAuth } = useAuth();
 	const roomId = useRoomIdFromRouter();
 	const router = useRouter();
-	const { data: room, isError, isLoading, error } = useRoomDetails(roomId, {
+	const {
+		data: room,
+		isError,
+		isLoading,
+		error,
+	} = useRoomDetails(roomId, {
 		onEmptySnapshot() {
 			router.push("/");
 		},
@@ -38,7 +43,6 @@ function VotingPage() {
 		if (isInRoom) return;
 
 		router.push(`/join-room?roomId=${roomId}`);
-
 	}, [loading, isInRoom]);
 
 	if (loading || !isInRoom) return null;

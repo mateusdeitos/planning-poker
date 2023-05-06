@@ -29,5 +29,4 @@ export default withAuth(async (req, res) => {
 	} catch (e) {
 		return res.status(500).send(e.message);
 	}
-
-})
+});

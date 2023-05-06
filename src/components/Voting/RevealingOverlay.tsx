@@ -10,7 +10,7 @@ export const RevealingOverlay = () => {
 		clearInterval(intervalRef.current);
 
 		intervalRef.current = setInterval(() => {
-			setCount(count => {
+			setCount((count) => {
 				if (count > 0) {
 					return count - 1;
 				}
@@ -24,23 +24,22 @@ export const RevealingOverlay = () => {
 			return;
 		}
 
-
 		return () => clearInterval(intervalRef.current);
 	}, [count]);
 
-	return <Flex
-		zIndex={9999}
-		position="absolute"
-		top={0}
-		left={0}
-		right={0}
-		bottom={0}
-		alignItems="center"
-		justifyContent="center"
-		bg="rgba(0,0,0,0.5)"
-	>
-		<Heading color="gray.100">
-			Revelando cartas em: {count}
-		</Heading>
-	</Flex>;
+	return (
+		<Flex
+			zIndex={9999}
+			position="absolute"
+			top={0}
+			left={0}
+			right={0}
+			bottom={0}
+			alignItems="center"
+			justifyContent="center"
+			bg="rgba(0,0,0,0.5)"
+		>
+			<Heading color="gray.100">Revelando cartas em: {count}</Heading>
+		</Flex>
+	);
 };

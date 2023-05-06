@@ -13,7 +13,9 @@ export default withAuth(async (req, res) => {
 	}
 
 	try {
-		const response = await getRoomDetails(Array.isArray(roomId) ? roomId[0] : roomId);
+		const response = await getRoomDetails(
+			Array.isArray(roomId) ? roomId[0] : roomId
+		);
 		if (!response) {
 			return res.status(404).send("Room not found");
 		}
@@ -21,5 +23,4 @@ export default withAuth(async (req, res) => {
 	} catch (e) {
 		return res.status(500).send(e.message);
 	}
-
 });

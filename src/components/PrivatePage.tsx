@@ -17,8 +17,8 @@ const PrivatePage = (Component: React.FC) => {
 			return null;
 		}
 
-		return <Component {...props} />
-	}
-}
+		return <Component {...props} />;
+	};
+};
 
 export default PrivatePage;

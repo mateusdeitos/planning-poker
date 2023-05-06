@@ -9,14 +9,18 @@ type Options<S = any> = {
 	onEmptySnapshot?: () => void;
 	onError?: (error: AxiosError<string>) => void;
 	select?: (room: App.Room) => S;
-}
+};
 
-export const useRoomDetails = <S = App.Room>(roomId: string, options?: Options<S>) => {
+export const useRoomDetails = <S = App.Room>(
+	roomId: string,
+	options?: Options<S>
+) => {
 	const { user } = useAuth();
 	const queryClient = useQueryClient();
 	const queryKey = ["room", roomId];
-	const query = useQuery<App.Room, AxiosError<string>, S>(queryKey,
-		() => api.get(`/api/room/${roomId}`).then(res => res.data),
+	const query = useQuery<App.Room, AxiosError<string>, S>(
+		queryKey,
+		() => api.get(`/api/room/${roomId}`).then((res) => res.data),
 		{
 			enabled: !!roomId,
 			retry: false,
@@ -33,7 +37,7 @@ export const useRoomDetails = <S = App.Room>(roomId: string, options?: Options<S
 			return;
 		}
 
-		queryClient.setQueryData<App.Room>(queryKey, oldRoom => {
+		queryClient.setQueryData<App.Room>(queryKey, (oldRoom) => {
 			if (!room) return oldRoom;
 
 			if (oldRoom?.votingState != room.votingState) {
@@ -52,7 +56,7 @@ export const useRoomDetails = <S = App.Room>(roomId: string, options?: Options<S
 
 					return acc;
 				}, room?.members ?? {}),
-			}
+			};
 		});
 	});
 
@@ -72,11 +76,11 @@ export const useRoomDetails = <S = App.Room>(roomId: string, options?: Options<S
 				},
 			};
 		});
-	}
+	};
 
 	return {
 		...query,
 		updateMember,
 		invalidate,
 	};
-}
+};

@@ -11,6 +11,7 @@ The app uses Firebase Realtime Database's for the realtime communication between
 To be able to join a room, the user must sign-in using his Google account
 
 In the app, a user can:
+
 - create a room and invite others
 - join a room created by other user
 - inside a room, choose a card to vote in a round

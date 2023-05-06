@@ -28,9 +28,8 @@ export default withAuth(async (req, res) => {
 	try {
 		const response = await changeMemberName(roomId, memberId, name);
 
-		return res.status(200).json(response)
+		return res.status(200).json(response);
 	} catch (e) {
 		return res.status(500).send(e.message);
 	}
-
 });

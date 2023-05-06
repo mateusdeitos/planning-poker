@@ -5,12 +5,19 @@ import { App } from "../types";
 import { useRoomDetails } from "./useRoomDetails";
 import { useSubscribeToRef } from "./useSubscribeToRef";
 
-
-export const useMember = (roomId: string, memberId: string, onSuccess?: (data: App.User) => void) => {
+export const useMember = (
+	roomId: string,
+	memberId: string,
+	onSuccess?: (data: App.User) => void
+) => {
 	const queryClient = useQueryClient();
 	const queryKey = ["room", roomId, "members", memberId];
-	const query = useQuery<App.User, AxiosError<string>>(queryKey,
-		() => api.get(`/api/room/${roomId}/members/${memberId}`).then(res => res.data),
+	const query = useQuery<App.User, AxiosError<string>>(
+		queryKey,
+		() =>
+			api
+				.get(`/api/room/${roomId}/members/${memberId}`)
+				.then((res) => res.data),
 		{
 			enabled: !!roomId && !!memberId,
 			refetchOnWindowFocus: false,
@@ -26,15 +33,21 @@ export const useMember = (roomId: string, memberId: string, onSuccess?: (data: A
 
 	const { updateMember } = useRoomDetails(roomId);
 
-	useSubscribeToRef<App.User>(`rooms/${roomId}/members/${memberId}`, (member) => {
-		if (!member) {
-			return;
+	useSubscribeToRef<App.User>(
+		`rooms/${roomId}/members/${memberId}`,
+		(member) => {
+			if (!member) {
+				return;
+			}
+
+			queryClient.setQueryData<App.User>(queryKey, member);
 		}
+	);
 
-		queryClient.setQueryData<App.User>(queryKey, member);
-	});
-
-	const updateVoteStatus = (voteStatus: App.User["voteStatus"], vote: App.User["vote"]) => {
+	const updateVoteStatus = (
+		voteStatus: App.User["voteStatus"],
+		vote: App.User["vote"]
+	) => {
 		const currentMember = queryClient.getQueryData<App.User>(queryKey);
 		if (!currentMember) return;
 		const newMember = {
@@ -59,6 +72,6 @@ export const useMember = (roomId: string, memberId: string, onSuccess?: (data: A
 		...query,
 		setVote,
 		setUnvote,
-		invalidate: () => queryClient.invalidateQueries(queryKey)
+		invalidate: () => queryClient.invalidateQueries(queryKey),
 	};
 };
