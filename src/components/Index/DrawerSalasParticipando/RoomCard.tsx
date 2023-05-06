@@ -54,11 +54,7 @@ export const RoomCard = ({
 						};
 
 						return (
-							<Tooltip
-								key={member.uid}
-								label={member.displayName}
-								placement="bottom"
-							>
+							<Tooltip key={member.uid} label={member.displayName} placement="bottom">
 								<Avatar {...props} />
 							</Tooltip>
 						);

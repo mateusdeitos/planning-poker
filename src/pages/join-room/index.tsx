@@ -27,9 +27,7 @@ function JoinRoom() {
 	});
 	const router = useRouter();
 	const toast = useToast();
-	const roomId = Array.isArray(router.query.roomId)
-		? router.query.roomId[0]
-		: router.query.roomId;
+	const roomId = Array.isArray(router.query.roomId) ? router.query.roomId[0] : router.query.roomId;
 	const { isLoading } = useRoomDetails(roomId, {
 		onError: (error: AxiosError) => {
 			if (error.response.status == 404) {
@@ -39,8 +37,7 @@ function JoinRoom() {
 	});
 
 	const { mutate, status } = useMutation({
-		mutationFn: (user: FireBaseUser) =>
-			api.post(`/api/join-room/${roomId}`, { user }),
+		mutationFn: (user: FireBaseUser) => api.post(`/api/join-room/${roomId}`, { user }),
 		onSuccess: () => router.push(`/voting/${roomId}`),
 		onError: (error: AxiosError<string>) => {
 			toast({
@@ -53,12 +50,7 @@ function JoinRoom() {
 
 	if (!roomId) {
 		return (
-			<Flex
-				h="100vh"
-				direction="column"
-				alignItems="center"
-				justifyContent="center"
-			>
+			<Flex h="100vh" direction="column" alignItems="center" justifyContent="center">
 				<Text>Deu erro :(</Text>
 			</Flex>
 		);
@@ -89,9 +81,7 @@ function JoinRoom() {
 							},
 						})}
 					/>
-					<FormErrorMessage>
-						{formState.errors?.memberName?.message}
-					</FormErrorMessage>
+					<FormErrorMessage>{formState.errors?.memberName?.message}</FormErrorMessage>
 				</FormControl>
 				<Button
 					variant="solid"

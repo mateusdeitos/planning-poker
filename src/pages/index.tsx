@@ -33,9 +33,7 @@ function Home() {
 	const { user } = useAuth();
 	const [lockButton, setLockButton] = useState(false);
 	const queryRoomsByUserUid = useQuery(["rooms", user.uid], () =>
-		api
-			.get<App.ListRoomsResponse>("/api/list-rooms-by-user-uid")
-			.then((r) => r.data)
+		api.get<App.ListRoomsResponse>("/api/list-rooms-by-user-uid").then((r) => r.data)
 	);
 	const { register, handleSubmit, formState } = useForm<Form>({
 		defaultValues: {
@@ -92,9 +90,7 @@ function Home() {
 	});
 
 	const handleVerSalas = (data: App.ListRoomsResponse) => {
-		renderDrawer((props) => (
-			<DrawerSalasParticipando {...props} {...data} />
-		)).then((roomId) => {
+		renderDrawer((props) => <DrawerSalasParticipando {...props} {...data} />).then((roomId) => {
 			const toastId = toast({
 				variant: "solid",
 				status: "loading",
@@ -115,12 +111,7 @@ function Home() {
 	return (
 		<Wrapper>
 			<Header />
-			<Flex
-				h="100vh"
-				direction="row"
-				alignItems="center"
-				justifyContent="center"
-			>
+			<Flex h="100vh" direction="row" alignItems="center" justifyContent="center">
 				<VStack spacing={4}>
 					<FormControl isInvalid={!!formState.errors?.roomName?.message}>
 						<FormLabel htmlFor="roomName">Nome da sala</FormLabel>
@@ -139,14 +130,10 @@ function Home() {
 								},
 							})}
 						/>
-						<FormErrorMessage>
-							{formState.errors?.roomName?.message}
-						</FormErrorMessage>
+						<FormErrorMessage>{formState.errors?.roomName?.message}</FormErrorMessage>
 					</FormControl>
 					<FormControl isInvalid={!!formState.errors?.authorName?.message}>
-						<FormLabel htmlFor="authorName">
-							Como você quer ser chamado
-						</FormLabel>
+						<FormLabel htmlFor="authorName">Como você quer ser chamado</FormLabel>
 						<Input
 							type="text"
 							id="authorName"
@@ -165,9 +152,7 @@ function Home() {
 								},
 							})}
 						/>
-						<FormErrorMessage>
-							{formState.errors?.authorName?.message}
-						</FormErrorMessage>
+						<FormErrorMessage>{formState.errors?.authorName?.message}</FormErrorMessage>
 					</FormControl>
 					<Button
 						w="100%"
@@ -183,8 +168,7 @@ function Home() {
 						isLoading={queryRoomsByUserUid.isLoading}
 						isDisabled={
 							queryRoomsByUserUid.isError ||
-							Object.keys(queryRoomsByUserUid?.data?.asMember ?? {}).length ===
-								0
+							Object.keys(queryRoomsByUserUid?.data?.asMember ?? {}).length === 0
 						}
 						colorScheme="blue"
 						variant="solid"

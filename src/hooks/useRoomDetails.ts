@@ -11,10 +11,7 @@ type Options<S = any> = {
 	select?: (room: App.Room) => S;
 };
 
-export const useRoomDetails = <S = App.Room>(
-	roomId: string,
-	options?: Options<S>
-) => {
+export const useRoomDetails = <S = App.Room>(roomId: string, options?: Options<S>) => {
 	const { user } = useAuth();
 	const queryClient = useQueryClient();
 	const queryKey = ["room", roomId];

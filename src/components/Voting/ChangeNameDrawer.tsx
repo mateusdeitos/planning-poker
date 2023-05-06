@@ -12,23 +12,17 @@ import {
 	Input,
 } from "@chakra-ui/react";
 import { useForm } from "react-hook-form";
-import {
-	DrawerContainer,
-	TDrawerComponent,
-	useDrawerContext,
-} from "../../renderDrawer";
+import { DrawerContainer, TDrawerComponent, useDrawerContext } from "../../renderDrawer";
 
 export const ChangeNameDrawer = ({
 	currentName,
 	...props
 }: TDrawerComponent<{ currentName: string }>) => {
-	const { register, handleSubmit, formState } = useForm<{ authorName: string }>(
-		{
-			defaultValues: {
-				authorName: currentName,
-			},
-		}
-	);
+	const { register, handleSubmit, formState } = useForm<{ authorName: string }>({
+		defaultValues: {
+			authorName: currentName,
+		},
+	});
 
 	const { close, reject } = useDrawerContext<string>();
 
@@ -40,9 +34,7 @@ export const ChangeNameDrawer = ({
 					<DrawerHeader>Alterar o nome</DrawerHeader>
 					<DrawerBody>
 						<FormControl isInvalid={!!formState.errors?.authorName?.message}>
-							<FormLabel htmlFor="authorName">
-								Como você quer ser chamado
-							</FormLabel>
+							<FormLabel htmlFor="authorName">Como você quer ser chamado</FormLabel>
 							<Input
 								type="text"
 								id="authorName"
@@ -61,9 +53,7 @@ export const ChangeNameDrawer = ({
 									},
 								})}
 							/>
-							<FormErrorMessage>
-								{formState.errors?.authorName?.message}
-							</FormErrorMessage>
+							<FormErrorMessage>{formState.errors?.authorName?.message}</FormErrorMessage>
 						</FormControl>
 					</DrawerBody>
 					<DrawerFooter>

@@ -1,11 +1,5 @@
 import { Flex, Spinner } from "@chakra-ui/react";
-import {
-	createContext,
-	Dispatch,
-	useContext,
-	useReducer,
-	useState,
-} from "react";
+import { createContext, Dispatch, useContext, useReducer, useState } from "react";
 
 type Actions = {
 	type: "loader";

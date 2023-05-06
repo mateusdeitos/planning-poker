@@ -6,11 +6,7 @@ type Props = Omit<AvatarProps, "name" | "src"> & {
 	tooltipPlacement?: TooltipProps["placement"];
 };
 
-export const UserAvatar = ({
-	user,
-	tooltipPlacement = "top",
-	...props
-}: Props) => {
+export const UserAvatar = ({ user, tooltipPlacement = "top", ...props }: Props) => {
 	return (
 		<Tooltip label={user.displayName} hasArrow placement={tooltipPlacement}>
 			<Avatar {...props} src={user.photoURL} name={user.displayName} />

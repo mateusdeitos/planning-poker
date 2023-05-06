@@ -15,14 +15,8 @@ import { useAuth } from "../context/AuthContext";
 export const Header = ({ subTitle = <></> }) => {
 	const { toggleColorMode } = useColorMode();
 	const headerBg = useColorModeValue("gray.200", "gray.700");
-	const IconColorMode = useColorModeValue(
-		<IconMoonStars size={24} />,
-		<IconSunHigh size={24} />
-	);
-	const colorButtonToggleColorMode = useColorModeValue(
-		"gray.700",
-		"yellow.500"
-	);
+	const IconColorMode = useColorModeValue(<IconMoonStars size={24} />, <IconSunHigh size={24} />);
+	const colorButtonToggleColorMode = useColorModeValue("gray.700", "yellow.500");
 	const colorButtonLeaveRoom = useColorModeValue("gray.700", "gray.200");
 	const { user, logout } = useAuth();
 

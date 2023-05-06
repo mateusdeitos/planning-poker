@@ -1,9 +1,4 @@
-import {
-	getData,
-	pushData,
-	remove,
-	updateData,
-} from "../../../lib/firebase-admin";
+import { getData, pushData, remove, updateData } from "../../../lib/firebase-admin";
 import { User } from "../../models/User";
 import { App } from "../../types";
 
@@ -44,9 +39,7 @@ export const createRoom = async (roomName: string, user: App.User) => {
 export const listRoomsByUserUid = async (
 	userUid: App.User["uid"]
 ): Promise<App.ListRoomsResponse> => {
-	const roomIds = await getData<string[] | null>(
-		`userRooms/${userUid}/roomIds`
-	);
+	const roomIds = await getData<string[] | null>(`userRooms/${userUid}/roomIds`);
 	const results: App.ListRoomsResponse = {
 		asAuthor: {},
 		asMember: {},
@@ -119,10 +112,7 @@ export const leaveRoom = async (roomId: string, memberId: string) => {
 	return Promise.all(promises);
 };
 
-export const changeState = async (
-	roomId: string,
-	phase: App.Room["votingState"]
-) => {
+export const changeState = async (roomId: string, phase: App.Room["votingState"]) => {
 	const room = await getRoomDetails(roomId);
 	if (!room) {
 		throw new Error("Room not found");
@@ -145,11 +135,7 @@ export const changeState = async (
 	return updateData(`rooms/${roomId}`, updatedRoom);
 };
 
-export const changeMemberName = async (
-	roomId: string,
-	memberId: string,
-	name: string
-) => {
+export const changeMemberName = async (roomId: string, memberId: string, name: string) => {
 	const room = await getRoomDetails(roomId);
 	if (!room) {
 		throw new Error("Room not found");
@@ -165,11 +151,7 @@ export const changeMemberName = async (
 	});
 };
 
-export const vote = async (
-	roomId: string,
-	memberId: string,
-	vote: App.Card["value"]
-) => {
+export const vote = async (roomId: string, memberId: string, vote: App.Card["value"]) => {
 	const room = await getRoomDetails(roomId);
 	if (!room) {
 		throw new Error("Room not found");
@@ -206,15 +188,9 @@ export const getRoomDetails = async (roomId: string) => {
 	return getData<App.Room | null>(`rooms/${roomId}`);
 };
 
-const updateUserRooms = async (
-	roomId: string,
-	userUid: string,
-	action: "enter" | "leave"
-) => {
+const updateUserRooms = async (roomId: string, userUid: string, action: "enter" | "leave") => {
 	const userRooms = await getData<App.UserRooms>("userRooms");
-	const roomIds = (userRooms?.[userUid]?.roomIds || []).filter(
-		(id) => id != roomId
-	);
+	const roomIds = (userRooms?.[userUid]?.roomIds || []).filter((id) => id != roomId);
 	if (action === "enter") {
 		roomIds.push(roomId);
 	}

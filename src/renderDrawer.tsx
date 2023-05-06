@@ -1,15 +1,5 @@
-import {
-	Drawer,
-	DrawerOverlay,
-	DrawerProps,
-	useDisclosure,
-} from "@chakra-ui/react";
-import React, {
-	cloneElement,
-	createContext,
-	PropsWithChildren,
-	useContext,
-} from "react";
+import { Drawer, DrawerOverlay, DrawerProps, useDisclosure } from "@chakra-ui/react";
+import React, { cloneElement, createContext, PropsWithChildren, useContext } from "react";
 import { createRoot } from "react-dom/client";
 import { AppContext } from "./context/AppContext";
 

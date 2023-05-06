@@ -25,9 +25,7 @@ export default withAuth(async (req, res) => {
 	memberId = Array.isArray(memberId) ? memberId[0] : memberId;
 
 	try {
-		const response = await getData<App.User | null>(
-			`rooms/${roomId}/members/${memberId}`
-		);
+		const response = await getData<App.User | null>(`rooms/${roomId}/members/${memberId}`);
 		return res.status(200).json(response);
 	} catch (e) {
 		return res.status(500).send(e.message);

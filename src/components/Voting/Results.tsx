@@ -101,12 +101,7 @@ export const Results = () => {
 					<StatNumber>{results.lowestVote}</StatNumber>
 					<StatHelpText>
 						{results.lowest.map((u, index) => (
-							<UserAvatar
-								key={u.uid}
-								user={u}
-								size="sm"
-								transform={`translateX(-${10 * index}px)`}
-							/>
+							<UserAvatar key={u.uid} user={u} size="sm" />
 						))}
 					</StatHelpText>
 				</Stat>
@@ -117,12 +112,7 @@ export const Results = () => {
 					<StatNumber>{results.highestVote}</StatNumber>
 					<StatHelpText>
 						{results.highest.map((u, index) => (
-							<UserAvatar
-								key={u.uid}
-								user={u}
-								size="sm"
-								transform={`translateX(-${10 * index}px)`}
-							/>
+							<UserAvatar key={u.uid} user={u} size="sm" />
 						))}
 					</StatHelpText>
 				</Stat>

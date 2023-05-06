@@ -1,10 +1,4 @@
-import {
-	Card,
-	CardBody,
-	CardProps,
-	Heading,
-	useColorModeValue,
-} from "@chakra-ui/react";
+import { Card, CardBody, CardProps, Heading, useColorModeValue } from "@chakra-ui/react";
 import { IconBrandGit } from "@tabler/icons-react";
 import { App } from "../../types";
 
@@ -13,13 +7,7 @@ type VotingCardProps = CardProps & {
 	selected?: boolean;
 };
 
-export function VotingCard({
-	children,
-	h = 150,
-	w = 100,
-	selected,
-	...props
-}: VotingCardProps) {
+export function VotingCard({ children, h = 150, w = 100, selected, ...props }: VotingCardProps) {
 	return (
 		<Card
 			{...props}

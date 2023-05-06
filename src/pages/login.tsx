@@ -16,8 +16,7 @@ export default function Login() {
 		>
 			<Heading size="lg">Bem vindo!</Heading>
 			<Text size="md">
-				Para poder utilizar o Planning Poker App, faça login com sua conta
-				Google
+				Para poder utilizar o Planning Poker App, faça login com sua conta Google
 			</Text>
 			<Divider my={8} />
 			<LoginWithGoogleButton />

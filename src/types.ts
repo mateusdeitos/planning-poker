@@ -1,10 +1,7 @@
 import { User as FireBaseUser } from "firebase/auth";
 import { NextApiRequest, NextApiResponse } from "next";
 export declare module App {
-	type User = Pick<
-		FireBaseUser,
-		"displayName" | "photoURL" | "email" | "uid"
-	> & {
+	type User = Pick<FireBaseUser, "displayName" | "photoURL" | "email" | "uid"> & {
 		vote: Card["value"];
 		voteStatus: "voted" | "not-voted";
 		role: "admin" | "member";

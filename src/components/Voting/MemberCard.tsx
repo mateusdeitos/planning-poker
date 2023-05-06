@@ -17,14 +17,13 @@ export const MemberCard = ({ member }: { member: App.User }) => {
 			<CardHeader pos="absolute" top="-43px" left="14px">
 				<UserAvatar user={member} size="sm" />
 			</CardHeader>
-			{data?.votingState !== "finished" &&
-				member.voteStatus === "not-voted" && <VotingCard.NotVotedBody />}
+			{data?.votingState !== "finished" && member.voteStatus === "not-voted" && (
+				<VotingCard.NotVotedBody />
+			)}
 			{data?.votingState !== "finished" && member.voteStatus === "voted" && (
 				<VotingCard.VotedBody />
 			)}
-			{data?.votingState === "finished" && (
-				<VotingCard.RevealedBody value={label} />
-			)}
+			{data?.votingState === "finished" && <VotingCard.RevealedBody value={label} />}
 		</VotingCard>
 	);
 };

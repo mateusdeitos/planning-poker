@@ -7,13 +7,7 @@ import {
 	useBreakpointValue,
 	useToast,
 } from "@chakra-ui/react";
-import {
-	IconDice,
-	IconDoorExit,
-	IconLink,
-	IconPlayerPlay,
-	IconUser,
-} from "@tabler/icons-react";
+import { IconDice, IconDoorExit, IconLink, IconPlayerPlay, IconUser } from "@tabler/icons-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import router from "next/router";
@@ -117,10 +111,7 @@ export const Actions = () => {
 			<ResponsiveButton leftIcon={<IconLink />} onClick={copyToClipboard}>
 				Copiar Link de convite
 			</ResponsiveButton>
-			<ResponsiveButton
-				leftIcon={<IconDoorExit />}
-				onClick={() => leaveRoom.mutate()}
-			>
+			<ResponsiveButton leftIcon={<IconDoorExit />} onClick={() => leaveRoom.mutate()}>
 				Sair da sala
 			</ResponsiveButton>
 			<ChangeNameButton />
@@ -156,11 +147,7 @@ const ChangeNameButton = () => {
 
 	const handleClick = async () => {
 		const displayName = await renderDrawer<string>((props) => (
-			<ChangeNameDrawer
-				{...props}
-				placement="bottom"
-				currentName={member?.displayName}
-			/>
+			<ChangeNameDrawer {...props} placement="bottom" currentName={member?.displayName} />
 		));
 
 		if (displayName === member?.displayName) {
@@ -181,12 +168,7 @@ const ChangeNameButton = () => {
 	);
 };
 
-const ResponsiveButton = ({
-	children,
-	leftIcon,
-	rightIcon,
-	...props
-}: ButtonProps) => {
+const ResponsiveButton = ({ children, leftIcon, rightIcon, ...props }: ButtonProps) => {
 	const isMobile = useBreakpointValue({ base: true, md: false, lg: false });
 
 	if (isMobile) {

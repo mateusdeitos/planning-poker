@@ -14,10 +14,7 @@ export const useMember = (
 	const queryKey = ["room", roomId, "members", memberId];
 	const query = useQuery<App.User, AxiosError<string>>(
 		queryKey,
-		() =>
-			api
-				.get(`/api/room/${roomId}/members/${memberId}`)
-				.then((res) => res.data),
+		() => api.get(`/api/room/${roomId}/members/${memberId}`).then((res) => res.data),
 		{
 			enabled: !!roomId && !!memberId,
 			refetchOnWindowFocus: false,
@@ -33,21 +30,15 @@ export const useMember = (
 
 	const { updateMember } = useRoomDetails(roomId);
 
-	useSubscribeToRef<App.User>(
-		`rooms/${roomId}/members/${memberId}`,
-		(member) => {
-			if (!member) {
-				return;
-			}
-
-			queryClient.setQueryData<App.User>(queryKey, member);
+	useSubscribeToRef<App.User>(`rooms/${roomId}/members/${memberId}`, (member) => {
+		if (!member) {
+			return;
 		}
-	);
 
-	const updateVoteStatus = (
-		voteStatus: App.User["voteStatus"],
-		vote: App.User["vote"]
-	) => {
+		queryClient.setQueryData<App.User>(queryKey, member);
+	});
+
+	const updateVoteStatus = (voteStatus: App.User["voteStatus"], vote: App.User["vote"]) => {
 		const currentMember = queryClient.getQueryData<App.User>(queryKey);
 		if (!currentMember) return;
 		const newMember = {

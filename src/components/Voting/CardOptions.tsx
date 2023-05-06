@@ -1,9 +1,4 @@
-import {
-	Flex,
-	useColorModeValue,
-	useToast,
-	useUpdateEffect,
-} from "@chakra-ui/react";
+import { Flex, useColorModeValue, useToast, useUpdateEffect } from "@chakra-ui/react";
 import { useMutation } from "@tanstack/react-query";
 import { useRef, useState } from "react";
 import { useAuth } from "../../context/AuthContext";
@@ -109,10 +104,7 @@ export const CardOptions = () => {
 						_hover={{ borderColor: "green.300" }}
 						cursor="pointer"
 					>
-						<VotingCard.HoverableBody
-							value={card.label}
-							selected={card.value === selected}
-						/>
+						<VotingCard.HoverableBody value={card.label} selected={card.value === selected} />
 					</VotingCard>
 				);
 			})}
