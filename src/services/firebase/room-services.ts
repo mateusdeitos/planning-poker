@@ -30,6 +30,7 @@ export const createRoom = async (roomName: string, user: App.User) => {
       { label: "3", value: 3 },
       { label: "8", value: 8 },
       { label: "13", value: 13 },
+      { label: "21", value: 21 },
       { label: "34", value: 34 },
       { label: "55", value: 55 },
       { label: "89", value: 89 },
